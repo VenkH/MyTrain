@@ -1,13 +1,13 @@
-package com.kyr.mytrain;
+package com.kyr.mytrain.memberr;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MyTrainApplication {
+public class MemberApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MyTrainApplication.class, args);
+        SpringApplication.run(MemberApplication.class, args);
     }
 
 }
