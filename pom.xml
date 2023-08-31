@@ -6,6 +6,7 @@
     <modules>
         <module>member</module>
         <module>common</module>
+        <module>gateway</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -51,6 +52,7 @@
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
         </dependencies>
+
     </dependencyManagement>
 
 </project>
