@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kyr.mytrain.member.mapper.MemberMapper">
+
+  <resultMap id="BaseResultMap" type="com.kyr.mytrain.member.domain.Member">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+  </resultMap>
+
+  <select id="count" resultType="java.lang.Integer">
+    select count(1) from member
+  </select>
+
+
+</mapper>
