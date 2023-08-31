@@ -29,7 +29,7 @@ public class MemberService {
         memberExample.createCriteria().andMobileEqualTo(mobile);
         List<Member> members = memberMapper.selectByExample(memberExample);
         if (CollUtil.isNotEmpty(members)) {
-            return CommonResp.generateErrorResp("手机号已被注册！");
+            throw new RuntimeException("手机号已被注册！");
         }
 
         Member member = new Member();
