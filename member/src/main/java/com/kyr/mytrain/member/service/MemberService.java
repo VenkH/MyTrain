@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.kyr.mytrain.common.constant.BusinessExceptionEnum;
 import com.kyr.mytrain.common.exception.BusinessException;
 import com.kyr.mytrain.common.resp.CommonResp;
+import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.member.domain.Member;
 import com.kyr.mytrain.member.domain.MemberExample;
 import com.kyr.mytrain.member.dto.MemberRegisterDto;
@@ -35,7 +36,7 @@ public class MemberService {
         }
 
         Member member = new Member();
-        member.setId(System.currentTimeMillis());
+        member.setId(SnowUtil.getSnowIdLong());
         member.setMobile(mobile);
         memberMapper.insert(member);
         return new CommonResp<>(member.getId());
