@@ -3,6 +3,8 @@ package com.kyr.mytrain.common.exception.handler;
 import com.kyr.mytrain.common.exception.BusinessException;
 import com.kyr.mytrain.common.resp.CommonResp;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,7 +32,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = BusinessException.class)
     @ResponseBody
     public CommonResp businessExceptionHandler(BusinessException e) {
+        log.warn("【业务异常】：" + e.getAnEnum().getDesc());
         CommonResp commonResp = CommonResp.generateErrorResp(e.getAnEnum().getDesc());
+        return commonResp;
+    }
+
+    @ExceptionHandler(value = BindException.class)
+    @ResponseBody
+    public CommonResp businessExceptionHandler(BindException e) {
+        StringBuilder errors = new StringBuilder();
+        for (ObjectError error: e.getBindingResult().getAllErrors()) {
+            errors.append(error.getDefaultMessage());
+        }
+        log.warn("【校验异常】：" + errors );
+        CommonResp commonResp = CommonResp.generateErrorResp(errors.toString());
         return commonResp;
     }
 
