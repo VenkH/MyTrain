@@ -1,0 +1,19 @@
+POST http://localhost:8001/member-service/passenger/save
+Content-Type: application/json
+
+{
+  "memberId": 1698238808228761600,
+  "name": "测试",
+  "idCard": 440599203002299999,
+  "type": 1
+}
+
+<> 2023-09-03T154347.200.json
+<> 2023-09-03T153842.200.json
+<> 2023-09-03T153823.200.json
+<> 2023-09-03T153741.200.json
+<> 2023-09-02T194206.200.json
+<> 2023-09-02T194151.200.json
+<> 2023-09-02T194148.200.json
+<> 2023-09-02T194135.200.json
+###
