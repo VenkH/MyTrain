@@ -2,7 +2,6 @@ package com.kyr.mytrain.member.controller;
 
 import com.kyr.mytrain.common.resp.CommonResp;
 import com.kyr.mytrain.member.dto.LoginDto;
-import com.kyr.mytrain.member.dto.MemberRegisterDto;
 import com.kyr.mytrain.member.dto.SendCodeDto;
 import com.kyr.mytrain.member.resp.MemberLoginResp;
 import com.kyr.mytrain.member.service.MemberService;
@@ -19,11 +18,6 @@ public class MemberController {
 
     @Resource
     private MemberService memberService;
-
-    @PostMapping("/register")
-    public CommonResp<Long> register(@Valid MemberRegisterDto mobile) {
-        return memberService.register(mobile);
-    }
 
     @PostMapping("/sendCode")
     public CommonResp sendCode(@Valid @RequestBody SendCodeDto mobile) {

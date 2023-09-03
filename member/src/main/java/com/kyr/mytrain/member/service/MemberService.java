@@ -10,7 +10,6 @@ import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.member.domain.Member;
 import com.kyr.mytrain.member.domain.MemberExample;
 import com.kyr.mytrain.member.dto.LoginDto;
-import com.kyr.mytrain.member.dto.MemberRegisterDto;
 import com.kyr.mytrain.member.dto.SendCodeDto;
 import com.kyr.mytrain.member.mapper.MemberMapper;
 import com.kyr.mytrain.member.resp.MemberLoginResp;
@@ -24,28 +23,6 @@ public class MemberService {
 
     @Resource
     private MemberMapper memberMapper;
-
-    /**
-     * 使用手机号码注册用户
-     * @param memberRegisterDto
-     * @return
-     */
-    public CommonResp<Long> register(MemberRegisterDto memberRegisterDto) {
-        String mobile = memberRegisterDto.getMobile();
-        // 校验手机号是否已注册
-        MemberExample memberExample = new MemberExample();
-        memberExample.createCriteria().andMobileEqualTo(mobile);
-        List<Member> members = memberMapper.selectByExample(memberExample);
-        if (CollUtil.isNotEmpty(members)) {
-            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_EXIST);
-        }
-
-        Member member = new Member();
-        member.setId(SnowUtil.getSnowIdLong());
-        member.setMobile(mobile);
-        memberMapper.insert(member);
-        return new CommonResp<>(member.getId());
-    }
 
     /**
      * 发送验证码
