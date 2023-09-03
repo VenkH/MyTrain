@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginDto {
+public class MemberLoginDto {
 
     @NotBlank(message = "【手机号】不能为空")
     @Pattern(regexp = "^1\\d{10}$", message = "手机号码格式错误")

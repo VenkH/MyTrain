@@ -9,7 +9,7 @@ import com.kyr.mytrain.common.util.JwtUtil;
 import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.member.domain.Member;
 import com.kyr.mytrain.member.domain.MemberExample;
-import com.kyr.mytrain.member.dto.LoginDto;
+import com.kyr.mytrain.member.dto.MemberLoginDto;
 import com.kyr.mytrain.member.dto.SendCodeDto;
 import com.kyr.mytrain.member.mapper.MemberMapper;
 import com.kyr.mytrain.member.resp.MemberLoginResp;
@@ -51,11 +51,11 @@ public class MemberService {
 
     /**
      * 使用短信验证码登录
-     * @param loginDto
+     * @param memberLoginDto
      * @return
      */
-    public CommonResp<MemberLoginResp> login(LoginDto loginDto) {
-        String mobile = loginDto.getMobile();
+    public CommonResp<MemberLoginResp> login(MemberLoginDto memberLoginDto) {
+        String mobile = memberLoginDto.getMobile();
         // 校验手机号是否已注册
         Member member = selectMemberByMobile(mobile);
 
@@ -65,7 +65,7 @@ public class MemberService {
         }
 
         // 验证码写死为8888
-        if ( !"8888".equals(loginDto.getCode())) {
+        if ( !"8888".equals(memberLoginDto.getCode())) {
             throw new BusinessException(BusinessExceptionEnum.MEMBER_CODE_ERROR);
         }
 

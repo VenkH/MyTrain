@@ -3,7 +3,6 @@ Content-Type: application/json
 token: {{token}}
 
 {
-  "memberId": 1698238808228761600,
   "name": "测试",
   "idCard": 440599203002299999,
   "type": 1

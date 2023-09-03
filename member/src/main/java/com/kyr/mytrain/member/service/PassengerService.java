@@ -2,6 +2,7 @@ package com.kyr.mytrain.member.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import com.kyr.mytrain.common.context.MemberContext;
 import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.member.domain.Passenger;
 import com.kyr.mytrain.member.dto.PassengerDto;
@@ -19,6 +20,7 @@ public class PassengerService {
         DateTime now = DateTime.now();
         Passenger passenger = BeanUtil.copyProperties(passengerDto, Passenger.class);
         passenger.setId(SnowUtil.getSnowIdLong());
+        passenger.setMemberId(MemberContext.getId());
         passenger.setCreateTime(now);
         passenger.setUpdateTime(now);
         passengerMapper.insert(passenger);
