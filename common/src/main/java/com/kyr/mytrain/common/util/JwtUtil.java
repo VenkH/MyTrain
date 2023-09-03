@@ -22,7 +22,7 @@ public class JwtUtil {
     public static String createToken(Object object) {
         Map<String, Object> map = BeanUtil.beanToMap(object);
         DateTime now = DateTime.now();
-        DateTime dateTime = now.offsetNew(DateField.SECOND, 3);
+        DateTime dateTime = now.offsetNew(DateField.HOUR, 24);
         // 签发时间
         map.put(JWTPayload.ISSUED_AT, now);
         // 过期时间
