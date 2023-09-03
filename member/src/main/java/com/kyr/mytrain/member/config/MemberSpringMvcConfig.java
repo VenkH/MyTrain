@@ -1,5 +1,6 @@
 package com.kyr.mytrain.member.config;
 
+import com.kyr.mytrain.common.interceptor.LogInterceptor;
 import com.kyr.mytrain.common.interceptor.MemberInterceptor;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
@@ -7,16 +8,16 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class MemberInterceptorConfig implements WebMvcConfigurer {
+public class MemberSpringMvcConfig implements WebMvcConfigurer {
+    @Resource
+    LogInterceptor logInterceptor;
 
+    @Resource
+    MemberInterceptor memberInterceptor;
 
-
-   @Resource
-   MemberInterceptor memberInterceptor;
-
-   @Override
-   public void addInterceptors(InterceptorRegistry registry) {
-
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+       registry.addInterceptor(logInterceptor);
 
        registry.addInterceptor(memberInterceptor)
                .addPathPatterns("/**")
@@ -24,5 +25,5 @@ public class MemberInterceptorConfig implements WebMvcConfigurer {
                        "/member-service/member/sendCode",
                        "/member-service/member/login"
                );
-   }
+    }
 }
