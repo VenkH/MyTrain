@@ -21,6 +21,10 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.kyr</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

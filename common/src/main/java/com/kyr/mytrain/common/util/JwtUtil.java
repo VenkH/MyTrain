@@ -7,8 +7,6 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTPayload;
 import cn.hutool.jwt.JWTUtil;
-import com.kyr.mytrain.common.constant.BusinessExceptionEnum;
-import com.kyr.mytrain.common.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -40,18 +38,24 @@ public class JwtUtil {
 
         JWT jwt = JWTUtil.parseToken(token).setKey(KEY.getBytes(StandardCharsets.UTF_8));
 
-        // 校验token是否合法且在有效期内
-        boolean validate = jwt.validate(0);
-        if (!validate) {
-            throw new BusinessException(BusinessExceptionEnum.TOKEN_EXPIRE);
-        }
-
         JSONObject payloads = jwt.getPayloads();
         payloads.remove(JWTPayload.ISSUED_AT);
         payloads.remove(JWTPayload.EXPIRES_AT);
         payloads.remove(JWTPayload.NOT_BEFORE);
         log.info("解析token，token中携带的数据是：" + payloads);
         return payloads;
+    }
+
+    public static boolean validate(String token) {
+        try {
+            JWT jwt = JWTUtil.parseToken(token).setKey(KEY.getBytes(StandardCharsets.UTF_8));
+            // 校验token是否合法且在有效期内
+            boolean validate = jwt.validate(0);
+            return validate;
+        } catch (Exception e) {
+            log.warn("token校验异常：" + e);
+            return false;
+        }
     }
 
 }
