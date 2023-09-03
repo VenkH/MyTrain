@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.kyr.mytrain.common.constant.BusinessExceptionEnum;
 import com.kyr.mytrain.common.exception.BusinessException;
 import com.kyr.mytrain.common.resp.CommonResp;
+import com.kyr.mytrain.common.util.JwtUtil;
 import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.member.domain.Member;
 import com.kyr.mytrain.member.domain.MemberExample;
@@ -12,6 +13,7 @@ import com.kyr.mytrain.member.dto.LoginDto;
 import com.kyr.mytrain.member.dto.MemberRegisterDto;
 import com.kyr.mytrain.member.dto.SendCodeDto;
 import com.kyr.mytrain.member.mapper.MemberMapper;
+import com.kyr.mytrain.member.resp.MemberLoginResp;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -75,7 +77,7 @@ public class MemberService {
      * @param loginDto
      * @return
      */
-    public CommonResp<Member> login(LoginDto loginDto) {
+    public CommonResp<MemberLoginResp> login(LoginDto loginDto) {
         String mobile = loginDto.getMobile();
         // 校验手机号是否已注册
         Member member = selectMemberByMobile(mobile);
@@ -90,7 +92,10 @@ public class MemberService {
             throw new BusinessException(BusinessExceptionEnum.MEMBER_CODE_ERROR);
         }
 
-        return new CommonResp<>(member);
+        String token = JwtUtil.createToken(member);
+        MemberLoginResp memberLoginResp = new MemberLoginResp(member, token);
+
+        return new CommonResp<>(memberLoginResp);
     }
 
     private Member selectMemberByMobile(String mobile) {
