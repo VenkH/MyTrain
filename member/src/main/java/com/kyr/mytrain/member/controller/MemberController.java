@@ -20,7 +20,7 @@ public class MemberController {
     private MemberService memberService;
 
     @PostMapping("/sendCode")
-    public CommonResp sendCode(@Valid @RequestBody SendCodeDto mobile) {
+    public CommonResp<Object> sendCode(@Valid @RequestBody SendCodeDto mobile) {
         return memberService.sendCode(mobile);
     }
 

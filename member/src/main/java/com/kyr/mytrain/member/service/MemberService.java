@@ -29,7 +29,7 @@ public class MemberService {
      * @param sendCodeDto
      * @return
      */
-    public CommonResp sendCode(SendCodeDto sendCodeDto) {
+    public CommonResp<Object> sendCode(SendCodeDto sendCodeDto) {
         String mobile = sendCodeDto.getMobile();
         // 校验手机号是否已注册
         Member memberDB = selectMemberByMobile(mobile);
