@@ -1,7 +1,7 @@
 <template>
   <a-layout-sider width="200" style="background: #fff">
     <a-menu
-        v-model:selectedKeys="selectedKeys2"
+        v-model:selectedKeys="selectedKeys"
         v-model:openKeys="openKeys"
         mode="inline"
         :style="{ height: '100%', borderRight: 0 }"
@@ -21,16 +21,26 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import {defineComponent, watch} from 'vue';
 import { ref } from 'vue';
-const selectedKeys2 = ref(['1']);
-const openKeys = ref(['sub1']);
+import router from "@/router";
+
 
 export default defineComponent({
   name: "sider-view",
+
   setup() {
+    const selectedKeys = ref([]);
+    const openKeys = ref(['sub1']);
+
+    watch(() => router.currentRoute.value.path, (newValue) => {
+      console.log('watch', newValue);
+      selectedKeys.value = [];
+      selectedKeys.value.push(newValue);
+    }, {immediate: true});
+
     return {
-      selectedKeys2,
+      selectedKeys,
       openKeys,
     };
   },
