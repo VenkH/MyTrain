@@ -1,8 +1,10 @@
 import { createStore } from 'vuex'
 
+const MEMBER = "MEMBER";
+
 export default createStore({
   state: {
-    member:{}
+    member:window.SessionStorage.get(MEMBER) || {}
   },
   // 数值单位转换
   getters: {
@@ -11,6 +13,7 @@ export default createStore({
   mutations: {
     setMember(state, _member) {
       state.member = _member;
+      window.SessionStorage.set(MEMBER, _member);
     }
 
   },
