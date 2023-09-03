@@ -7,8 +7,17 @@ const routes = [
   },
   {
     path: '/',
-    component: () => import( '../views/main.vue')
+    component: () => import( '../views/main.vue'),
+    children: [{
+      path: 'welcome',
+      component: () => import( '../views/main/welcome'),
+    }]
+  },
+  {
+    path: '',
+    redirect: '/welcome'
   }
+
 ]
 
 const router = createRouter({
