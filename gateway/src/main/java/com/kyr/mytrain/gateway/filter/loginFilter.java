@@ -1,7 +1,7 @@
 package com.kyr.mytrain.gateway.filter;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.kyr.mytrain.common.util.JwtUtil;
+import com.kyr.mytrain.gateway.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
