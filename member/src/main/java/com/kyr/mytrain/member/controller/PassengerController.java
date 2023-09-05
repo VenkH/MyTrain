@@ -2,6 +2,7 @@ package com.kyr.mytrain.member.controller;
 
 import com.kyr.mytrain.common.context.MemberContext;
 import com.kyr.mytrain.common.resp.CommonResp;
+import com.kyr.mytrain.common.resp.PageResp;
 import com.kyr.mytrain.member.dto.PassengerQueryDto;
 import com.kyr.mytrain.member.dto.PassengerSaveDto;
 import com.kyr.mytrain.member.resp.PassengerQueryResp;
@@ -9,8 +10,6 @@ import com.kyr.mytrain.member.service.PassengerService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/passenger")
@@ -26,9 +25,9 @@ public class PassengerController {
     }
 
     @GetMapping("/query-list")
-    public CommonResp<List<PassengerQueryResp>> queryList(@Valid PassengerQueryDto passengerQueryDto) {
+    public CommonResp<PageResp<PassengerQueryResp>> queryList(@Valid PassengerQueryDto passengerQueryDto) {
         passengerQueryDto.setMemberId(MemberContext.getId());
-        List<PassengerQueryResp> list = passengerService.queryPassenger(passengerQueryDto);
+        PageResp<PassengerQueryResp> list = passengerService.queryPassenger(passengerQueryDto);
         return new CommonResp(list);
     }
 }

@@ -3,7 +3,10 @@ package com.kyr.mytrain.member.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.kyr.mytrain.common.context.MemberContext;
+import com.kyr.mytrain.common.resp.PageResp;
 import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.member.domain.Passenger;
 import com.kyr.mytrain.member.domain.PassengerExample;
@@ -32,14 +35,20 @@ public class PassengerService {
         passengerMapper.insert(passenger);
     }
 
-    public List<PassengerQueryResp> queryPassenger(PassengerQueryDto passengerQueryDto) {
+    public PageResp<PassengerQueryResp> queryPassenger(PassengerQueryDto passengerQueryDto) {
         PassengerExample passengerExample = new PassengerExample();
         PassengerExample.Criteria criteria = passengerExample.createCriteria();
 
         if (ObjectUtil.isNotNull(passengerQueryDto.getMemberId())) {
             criteria.andMemberIdEqualTo(passengerQueryDto.getMemberId());
         }
+
+        PageHelper.startPage(passengerQueryDto.getPage(),passengerQueryDto.getSize());
         List<Passenger> passengers = passengerMapper.selectByExample(passengerExample);
-        return BeanUtil.copyToList(passengers, PassengerQueryResp.class);
+        PageInfo<Passenger> pageInfo = new PageInfo<>(passengers);
+
+        List<PassengerQueryResp> list = BeanUtil.copyToList(passengers, PassengerQueryResp.class);
+        PageResp<PassengerQueryResp> pageResp = new PageResp<>(pageInfo.getTotal(), list);
+        return pageResp;
     }
 }
