@@ -28,11 +28,20 @@ public class PassengerService {
     public void savePassenger(PassengerSaveDto passengerDto) {
         DateTime now = DateTime.now();
         Passenger passenger = BeanUtil.copyProperties(passengerDto, Passenger.class);
-        passenger.setId(SnowUtil.getSnowIdLong());
-        passenger.setMemberId(MemberContext.getId());
-        passenger.setCreateTime(now);
-        passenger.setUpdateTime(now);
-        passengerMapper.insert(passenger);
+        if (ObjectUtil.isNotNull(passenger.getId())) {
+            passenger.setId(SnowUtil.getSnowIdLong());
+            passenger.setMemberId(MemberContext.getId());
+            passenger.setCreateTime(now);
+            passenger.setUpdateTime(now);
+            passengerMapper.insert(passenger);
+        } else {
+            passenger.setUpdateTime(now);
+            // updateByPrimaryKey 和 updateByPrimaryKeySelective的区别是：
+            // updateByPrimaryKey 如果传入参数是空，会把空值也更新到数据库
+            // updateByPrimaryKeySelective 会选择性更新，不会更新空值
+            passengerMapper.updateByPrimaryKeySelective(passenger);
+        }
+
     }
 
     public PageResp<PassengerQueryResp> queryPassenger(PassengerQueryDto passengerQueryDto) {
