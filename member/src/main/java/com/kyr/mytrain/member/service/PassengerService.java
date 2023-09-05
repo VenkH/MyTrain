@@ -37,6 +37,7 @@ public class PassengerService {
 
     public PageResp<PassengerQueryResp> queryPassenger(PassengerQueryDto passengerQueryDto) {
         PassengerExample passengerExample = new PassengerExample();
+        passengerExample.setOrderByClause("id desc");
         PassengerExample.Criteria criteria = passengerExample.createCriteria();
 
         if (ObjectUtil.isNotNull(passengerQueryDto.getMemberId())) {
