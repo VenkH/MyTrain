@@ -28,7 +28,7 @@ public class PassengerService {
     public void savePassenger(PassengerSaveDto passengerDto) {
         DateTime now = DateTime.now();
         Passenger passenger = BeanUtil.copyProperties(passengerDto, Passenger.class);
-        if (ObjectUtil.isNotNull(passenger.getId())) {
+        if (ObjectUtil.isNull(passenger.getId())) {
             passenger.setId(SnowUtil.getSnowIdLong());
             passenger.setMemberId(MemberContext.getId());
             passenger.setCreateTime(now);
