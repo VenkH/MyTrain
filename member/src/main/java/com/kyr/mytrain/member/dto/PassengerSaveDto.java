@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.Date;
 
-public class PassengerDto {
+public class PassengerSaveDto {
     private Long id;
 
     private Long memberId;

@@ -1,14 +1,16 @@
 package com.kyr.mytrain.member.controller;
 
+import com.kyr.mytrain.common.context.MemberContext;
 import com.kyr.mytrain.common.resp.CommonResp;
-import com.kyr.mytrain.member.dto.PassengerDto;
+import com.kyr.mytrain.member.dto.PassengerQueryDto;
+import com.kyr.mytrain.member.dto.PassengerSaveDto;
+import com.kyr.mytrain.member.resp.PassengerQueryResp;
 import com.kyr.mytrain.member.service.PassengerService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/passenger")
@@ -18,8 +20,15 @@ public class PassengerController {
     private PassengerService passengerService;
 
     @PostMapping("/save")
-    public CommonResp<Object> sendCode(@Valid @RequestBody PassengerDto passenger) {
+    public CommonResp<Object> sendCode(@Valid @RequestBody PassengerSaveDto passenger) {
         passengerService.savePassenger(passenger);
         return new CommonResp<>();
+    }
+
+    @GetMapping("/query-list")
+    public CommonResp<List<PassengerQueryResp>> queryList(@Valid PassengerQueryDto passengerQueryDto) {
+        passengerQueryDto.setMemberId(MemberContext.getId());
+        List<PassengerQueryResp> list = passengerService.queryPassenger(passengerQueryDto);
+        return new CommonResp(list);
     }
 }
