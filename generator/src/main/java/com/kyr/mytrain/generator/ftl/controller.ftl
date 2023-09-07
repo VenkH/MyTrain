@@ -1,6 +1,5 @@
-package com.kyr.mytrain.${module}.controller.admin;
+package com.kyr.mytrain.${module}.controller;
 
-import com.kyr.mytrain.common.context.LoginMemberContext;
 import com.kyr.mytrain.common.resp.CommonResp;
 import com.kyr.mytrain.common.resp.PageResp;
 import com.kyr.mytrain.${module}.req.${Domain}QueryReq;
@@ -12,8 +11,8 @@ import jakarta.validation.Valid;
 import org.springframework. web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin/${do_main}")
-public class ${Domain}AdminController {
+@RequestMapping("/${do_main}")
+public class ${Domain}Controller {
 
     @Resource
     private ${Domain}Service ${domain}Service;

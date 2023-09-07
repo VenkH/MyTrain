@@ -32,7 +32,7 @@ public class ${Domain}Service {
         DateTime now = DateTime.now();
         ${Domain} ${domain} = BeanUtil.copyProperties(req, ${Domain}.class);
         if (ObjectUtil.isNull(${domain}.getId())) {
-            ${domain}.setId(SnowUtil.getSnowflakeNextId());
+            ${domain}.setId(SnowUtil.getSnowIdLong());
             ${domain}.setCreateTime(now);
             ${domain}.setUpdateTime(now);
             ${domain}Mapper.insert(${domain});
