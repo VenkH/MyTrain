@@ -26,7 +26,6 @@
 
 <script>
 import {defineComponent, ref, watch} from 'vue';
-import store from "@/store";
 import router from '@/router'
 
 export default defineComponent({
