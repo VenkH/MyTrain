@@ -39,6 +39,16 @@
             <artifactId>jaxen</artifactId>
             <version>1.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.kyr</groupId>
+            <artifactId>member</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kyr</groupId>
+            <artifactId>business</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
