@@ -1,14 +1,15 @@
 package com.kyr.mytrain.business.controller.admin;
 
-import com.kyr.mytrain.common.resp.CommonResp;
-import com.kyr.mytrain.common.resp.PageResp;
 import com.kyr.mytrain.business.req.TrainQueryReq;
 import com.kyr.mytrain.business.req.TrainSaveReq;
 import com.kyr.mytrain.business.resp.TrainQueryResp;
+import com.kyr.mytrain.business.service.TrainSeatService;
 import com.kyr.mytrain.business.service.TrainService;
+import com.kyr.mytrain.common.resp.CommonResp;
+import com.kyr.mytrain.common.resp.PageResp;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.springframework. web.bind.annotation.*;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,6 +19,9 @@ public class TrainAdminController {
 
     @Resource
     private TrainService trainService;
+
+    @Resource
+    private TrainSeatService trainSeatService;
 
     @PostMapping("/save")
     public CommonResp<Object> save(@Valid @RequestBody TrainSaveReq req) {
@@ -41,6 +45,12 @@ public class TrainAdminController {
     public CommonResp<List<TrainQueryResp>> queryAll() {
         List<TrainQueryResp> resp = trainService.queryAll();
         return new CommonResp<>(resp);
+    }
+
+    @GetMapping("/gen-seat/{trainCode}")
+    public CommonResp<Object> genSeat(@PathVariable String trainCode) {
+        trainSeatService.genTrainSeat(trainCode);
+        return new CommonResp<>();
     }
 
 }
