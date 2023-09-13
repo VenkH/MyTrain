@@ -77,9 +77,11 @@ import { defineComponent, ref, onMounted, watch } from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
 import {pinyin} from "pinyin-pro";
+import StationSelectView from "@/components/station-select";
 
 export default defineComponent({
   name: "train-view",
+  components: {StationSelectView},
   setup() {
     const TRAIN_TYPE_ARRAY = window.TRAIN_TYPE_ARRAY;
     const visible = ref(false);
