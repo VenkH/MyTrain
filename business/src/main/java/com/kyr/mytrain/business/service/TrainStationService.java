@@ -5,14 +5,14 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.kyr.mytrain.common.resp.PageResp;
-import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.business.domain.TrainStation;
 import com.kyr.mytrain.business.domain.TrainStationExample;
 import com.kyr.mytrain.business.mapper.TrainStationMapper;
 import com.kyr.mytrain.business.req.TrainStationQueryReq;
 import com.kyr.mytrain.business.req.TrainStationSaveReq;
 import com.kyr.mytrain.business.resp.TrainStationQueryResp;
+import com.kyr.mytrain.common.resp.PageResp;
+import com.kyr.mytrain.common.util.SnowUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +44,11 @@ public class TrainStationService {
 
     public PageResp<TrainStationQueryResp> queryList(TrainStationQueryReq req) {
         TrainStationExample trainStationExample = new TrainStationExample();
-        trainStationExample.setOrderByClause("id desc");
+        trainStationExample.setOrderByClause("train_code asc, `index` asc");
         TrainStationExample.Criteria criteria = trainStationExample.createCriteria();
+        if (ObjectUtil.isNotNull(req.getTrainCode())) {
+            criteria.andTrainCodeEqualTo(req.getTrainCode());
+        }
 
         LOG.info("查询页码：{}", req.getPage());
         LOG.info("每页条数：{}", req.getSize());
