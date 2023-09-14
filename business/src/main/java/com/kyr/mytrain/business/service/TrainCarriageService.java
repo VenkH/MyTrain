@@ -41,13 +41,16 @@ public class TrainCarriageService {
             throw new BusinessException(BusinessExceptionEnum.SEAT_COUNT_OR_COL_ERROR);
         }
 
-        TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
-        TrainCarriageExample.Criteria criteria = trainCarriageExample.createCriteria();
-        criteria.andTrainCodeEqualTo(req.getTrainCode());
-        criteria.andIndexEqualTo(req.getIndex());
-        List<TrainCarriage> trainCarriages = trainCarriageMapper.selectByExample(trainCarriageExample);
-        if (trainCarriages.size() > 0) {
-            throw new BusinessException(BusinessExceptionEnum.CARRIAGE_INDEX_EXIST);
+        // 新增车厢时校验车厢号是否重复，编辑车厢时不校验
+        if (ObjectUtil.isNull(req.getId())) {
+            TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
+            TrainCarriageExample.Criteria criteria = trainCarriageExample.createCriteria();
+            criteria.andTrainCodeEqualTo(req.getTrainCode());
+            criteria.andIndexEqualTo(req.getIndex());
+            List<TrainCarriage> trainCarriages = trainCarriageMapper.selectByExample(trainCarriageExample);
+            if (trainCarriages.size() > 0) {
+                throw new BusinessException(BusinessExceptionEnum.CARRIAGE_INDEX_EXIST);
+            }
         }
 
         DateTime now = DateTime.now();
