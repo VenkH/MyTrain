@@ -1,16 +1,19 @@
 package com.kyr.mytrain.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.kyr.mytrain.business.domain.Station;
 import com.kyr.mytrain.business.domain.StationExample;
+import com.kyr.mytrain.business.enums.BusinessExceptionEnum;
 import com.kyr.mytrain.business.mapper.StationMapper;
 import com.kyr.mytrain.business.req.StationQueryReq;
 import com.kyr.mytrain.business.req.StationSaveReq;
 import com.kyr.mytrain.business.resp.StationQueryResp;
+import com.kyr.mytrain.common.exception.BusinessException;
 import com.kyr.mytrain.common.resp.PageResp;
 import com.kyr.mytrain.common.util.SnowUtil;
 import jakarta.annotation.Resource;
@@ -32,6 +35,13 @@ public class StationService {
         DateTime now = DateTime.now();
         Station station = BeanUtil.copyProperties(req, Station.class);
         if (ObjectUtil.isNull(station.getId())) {
+            StationExample stationExample = new StationExample();
+            stationExample.createCriteria().andNameEqualTo(req.getName());
+            List<Station> stations = stationMapper.selectByExample(stationExample);
+            if (CollUtil.isNotEmpty(stations)) {
+                throw new BusinessException(BusinessExceptionEnum.STATION_NAME_EXIST);
+            }
+
             station.setId(SnowUtil.getSnowIdLong());
             station.setCreateTime(now);
             station.setUpdateTime(now);
