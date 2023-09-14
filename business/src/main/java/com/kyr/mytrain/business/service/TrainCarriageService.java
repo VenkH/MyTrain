@@ -5,14 +5,17 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.kyr.mytrain.common.resp.PageResp;
-import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.business.domain.TrainCarriage;
 import com.kyr.mytrain.business.domain.TrainCarriageExample;
+import com.kyr.mytrain.business.enums.BusinessExceptionEnum;
+import com.kyr.mytrain.business.enums.SeatColEnum;
 import com.kyr.mytrain.business.mapper.TrainCarriageMapper;
 import com.kyr.mytrain.business.req.TrainCarriageQueryReq;
 import com.kyr.mytrain.business.req.TrainCarriageSaveReq;
 import com.kyr.mytrain.business.resp.TrainCarriageQueryResp;
+import com.kyr.mytrain.common.exception.BusinessException;
+import com.kyr.mytrain.common.resp.PageResp;
+import com.kyr.mytrain.common.util.SnowUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +32,15 @@ public class TrainCarriageService {
     private TrainCarriageMapper trainCarriageMapper;
 
     public void save(TrainCarriageSaveReq req) {
+        // 验证列数和总座位数是否正确
+        List<SeatColEnum> colsByType = SeatColEnum.getColsByType(req.getSeatType());
+        int seatCount = colsByType.size() * req.getRowCount();
+        int colNum = colsByType.size();
+
+        if (req.getSeatCount() != seatCount || req.getColCount() != colNum) {
+            throw new BusinessException(BusinessExceptionEnum.SEAT_COUNT_OR_COL_ERROR);
+        }
+
         DateTime now = DateTime.now();
         TrainCarriage trainCarriage = BeanUtil.copyProperties(req, TrainCarriage.class);
         if (ObjectUtil.isNull(trainCarriage.getId())) {

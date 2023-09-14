@@ -106,7 +106,6 @@ public class TrainSeatService {
                     trainSeat.setCarriageIndex(carriageIndex);
                     trainSeat.setRow(StrUtil.fillBefore(Integer.toString(i), '0', 2));
                     trainSeat.setCol(seatColEnum.getCode());
-                    log.info("seatColEnum.getCode():{}", seatColEnum.getCode());
                     trainSeat.setSeatType(seatType);
                     trainSeat.setCarriageSeatIndex(carriageSeatIndex++);
                     trainSeat.setCreateTime(now);

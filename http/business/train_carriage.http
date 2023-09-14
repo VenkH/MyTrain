@@ -1,0 +1,13 @@
+POST http://localhost:8000/business-service/admin/train-carriage/save
+Content-Type: application/json
+token: {{token}}
+
+{
+
+  "trainCode": "G8080",
+  "index": 3,
+  "seatType": 1,
+  "seatCount": 5,
+  "rowCount": 3,
+  "colCount": 3
+}

@@ -49,20 +49,20 @@
         </a-select>
       </a-form-item>
       <a-form-item label="座位数">
-        <a-input v-model:value="trainCarriage.seatCount" />
+        <a-input v-model:value="trainCarriage.seatCount" disabled/>
       </a-form-item>
       <a-form-item label="排数">
         <a-input v-model:value="trainCarriage.rowCount" />
       </a-form-item>
       <a-form-item label="列数">
-        <a-input v-model:value="trainCarriage.colCount" />
+        <a-input v-model:value="trainCarriage.colCount" disabled/>
       </a-form-item>
     </a-form>
   </a-modal>
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue';
+import {defineComponent, ref, onMounted, watch} from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
 import TrainSelectView from "@/components/train-select";
@@ -131,6 +131,29 @@ export default defineComponent({
       dataIndex: 'operation'
     }
     ];
+
+    watch(() => trainCarriage.value.rowCount || trainCarriage.value.seatType, ()=>{
+      if (Tool.isNotEmpty(trainCarriage.value.rowCount) && Tool.isNotEmpty(trainCarriage.value.seatType)) {
+        let colNum = SEAT_NUM_BY_TYPE_ARRAY[trainCarriage.value.seatType - 1].num;
+        trainCarriage.value.colCount = colNum;
+        trainCarriage.value.seatCount = trainCarriage.value.rowCount * colNum;
+      } else {
+        trainCarriage.value.colCount = undefined;
+        trainCarriage.value.seatCount = undefined;
+      }
+    }, {immediate: true});
+
+    watch(() => trainCarriage.value.seatType, ()=>{
+      if (Tool.isNotEmpty(trainCarriage.value.rowCount) && Tool.isNotEmpty(trainCarriage.value.seatType)) {
+        let colNum = SEAT_NUM_BY_TYPE_ARRAY[trainCarriage.value.seatType - 1].num;
+        trainCarriage.value.colCount = colNum;
+        trainCarriage.value.seatCount = trainCarriage.value.rowCount * colNum;
+      } else {
+        trainCarriage.value.colCount = undefined;
+        trainCarriage.value.seatCount = undefined;
+      }
+    }, {immediate: true});
+
 
     const onAdd = () => {
       trainCarriage.value = {};

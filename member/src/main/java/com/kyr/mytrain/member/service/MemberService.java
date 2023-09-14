@@ -2,7 +2,7 @@ package com.kyr.mytrain.member.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.kyr.mytrain.common.constant.BusinessExceptionEnum;
+import com.kyr.mytrain.common.constant.BasicExceptionEnum;
 import com.kyr.mytrain.common.exception.BusinessException;
 import com.kyr.mytrain.common.resp.CommonResp;
 import com.kyr.mytrain.common.util.JwtUtil;
@@ -61,12 +61,12 @@ public class MemberService {
 
         // 如果手机号码不存在则直接返回
         if (ObjectUtil.isEmpty(member)) {
-            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_NOT_EXIST);
+            throw new BusinessException(BasicExceptionEnum.MOBILE_NOT_EXIST);
         }
 
         // 验证码写死为8888
         if ( !"8888".equals(memberLoginDto.getCode())) {
-            throw new BusinessException(BusinessExceptionEnum.MEMBER_CODE_ERROR);
+            throw new BusinessException(BasicExceptionEnum.CODE_ERROR);
         }
 
         String token = JwtUtil.createToken(member);
