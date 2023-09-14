@@ -132,7 +132,7 @@ export default defineComponent({
     }
     ];
 
-    watch(() => trainCarriage.value.rowCount || trainCarriage.value.seatType, ()=>{
+    watch(() => trainCarriage.value.rowCount, ()=>{
       if (Tool.isNotEmpty(trainCarriage.value.rowCount) && Tool.isNotEmpty(trainCarriage.value.seatType)) {
         let colNum = SEAT_NUM_BY_TYPE_ARRAY[trainCarriage.value.seatType - 1].num;
         trainCarriage.value.colCount = colNum;
