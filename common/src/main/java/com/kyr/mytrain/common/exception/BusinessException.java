@@ -1,19 +1,20 @@
 package com.kyr.mytrain.common.exception;
 
-import com.kyr.mytrain.common.constant.BusinessExceptionEnum;
+import com.kyr.mytrain.common.constant.BasicExceptionEnum;
+import com.kyr.mytrain.common.constant.ExceptionInterface;
 
 public class BusinessException extends RuntimeException{
-    private BusinessExceptionEnum anEnum;
+    private ExceptionInterface anEnum;
 
-    public BusinessException(BusinessExceptionEnum anEnum) {
+    public BusinessException(ExceptionInterface anEnum) {
         this.anEnum = anEnum;
     }
 
-    public BusinessExceptionEnum getAnEnum() {
+    public ExceptionInterface getAnEnum() {
         return anEnum;
     }
 
-    public void setAnEnum(BusinessExceptionEnum anEnum) {
+    public void setAnEnum(BasicExceptionEnum anEnum) {
         this.anEnum = anEnum;
     }
 
