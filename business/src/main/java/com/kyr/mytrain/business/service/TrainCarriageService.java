@@ -41,8 +41,10 @@ public class TrainCarriageService {
             throw new BusinessException(BusinessExceptionEnum.SEAT_COUNT_OR_COL_ERROR);
         }
 
-        // 新增车厢时校验车厢号是否重复，编辑车厢时不校验
-        if (ObjectUtil.isNull(req.getId())) {
+        DateTime now = DateTime.now();
+        TrainCarriage trainCarriage = BeanUtil.copyProperties(req, TrainCarriage.class);
+        if (ObjectUtil.isNull(trainCarriage.getId())) {
+            // 校验车次-车厢号唯一键是否已存在
             TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
             TrainCarriageExample.Criteria criteria = trainCarriageExample.createCriteria();
             criteria.andTrainCodeEqualTo(req.getTrainCode());
@@ -51,11 +53,8 @@ public class TrainCarriageService {
             if (trainCarriages.size() > 0) {
                 throw new BusinessException(BusinessExceptionEnum.CARRIAGE_INDEX_EXIST);
             }
-        }
 
-        DateTime now = DateTime.now();
-        TrainCarriage trainCarriage = BeanUtil.copyProperties(req, TrainCarriage.class);
-        if (ObjectUtil.isNull(trainCarriage.getId())) {
+
             trainCarriage.setId(SnowUtil.getSnowIdLong());
             trainCarriage.setCreateTime(now);
             trainCarriage.setUpdateTime(now);

@@ -1,16 +1,19 @@
 package com.kyr.mytrain.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.kyr.mytrain.business.domain.TrainStation;
 import com.kyr.mytrain.business.domain.TrainStationExample;
+import com.kyr.mytrain.business.enums.BusinessExceptionEnum;
 import com.kyr.mytrain.business.mapper.TrainStationMapper;
 import com.kyr.mytrain.business.req.TrainStationQueryReq;
 import com.kyr.mytrain.business.req.TrainStationSaveReq;
 import com.kyr.mytrain.business.resp.TrainStationQueryResp;
+import com.kyr.mytrain.common.exception.BusinessException;
 import com.kyr.mytrain.common.resp.PageResp;
 import com.kyr.mytrain.common.util.SnowUtil;
 import jakarta.annotation.Resource;
@@ -32,6 +35,18 @@ public class TrainStationService {
         DateTime now = DateTime.now();
         TrainStation trainStation = BeanUtil.copyProperties(req, TrainStation.class);
         if (ObjectUtil.isNull(trainStation.getId())) {
+            // 新增火车车站时校验车次-站序唯一键是否已存在
+            TrainStation trainStation1 = selectByUnique(req.getTrainCode(), req.getIndex());
+            if (ObjectUtil.isNotNull(trainStation1)) {
+                throw new BusinessException(BusinessExceptionEnum.TRAIN_STATION_TRAINCODE_INDEX_UNIQUE);
+            }
+
+            // 新增火车车站时校验车次-站名序唯一键是否已存在
+            TrainStation trainStation2 = selectByUnique(req.getTrainCode(), req.getName());
+            if (ObjectUtil.isNotNull(trainStation2)) {
+                throw new BusinessException(BusinessExceptionEnum.TRAIN_STATION_TRAINCODE_NAME_UNIQUE);
+            }
+
             trainStation.setId(SnowUtil.getSnowIdLong());
             trainStation.setCreateTime(now);
             trainStation.setUpdateTime(now);
@@ -69,5 +84,31 @@ public class TrainStationService {
 
     public void delete(Long id) {
         trainStationMapper.deleteByPrimaryKey(id);
+    }
+
+    public TrainStation selectByUnique(String trainCode, Integer index) {
+        TrainStationExample trainStationExample = new TrainStationExample();
+        TrainStationExample.Criteria criteria = trainStationExample.createCriteria();
+        criteria.andTrainCodeEqualTo(trainCode);
+        criteria.andIndexEqualTo(index);
+        List<TrainStation> trainStations = trainStationMapper.selectByExample(trainStationExample);
+        if (CollUtil.isNotEmpty(trainStations)) {
+            return trainStations.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public TrainStation selectByUnique(String trainCode, String name) {
+        TrainStationExample trainStationExample = new TrainStationExample();
+        TrainStationExample.Criteria criteria = trainStationExample.createCriteria();
+        criteria.andTrainCodeEqualTo(trainCode);
+        criteria.andNameEqualTo(name);
+        List<TrainStation> trainStations = trainStationMapper.selectByExample(trainStationExample);
+        if (CollUtil.isNotEmpty(trainStations)) {
+            return trainStations.get(0);
+        } else {
+            return null;
+        }
     }
 }
