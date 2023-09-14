@@ -41,6 +41,15 @@ public class TrainCarriageService {
             throw new BusinessException(BusinessExceptionEnum.SEAT_COUNT_OR_COL_ERROR);
         }
 
+        TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
+        TrainCarriageExample.Criteria criteria = trainCarriageExample.createCriteria();
+        criteria.andTrainCodeEqualTo(req.getTrainCode());
+        criteria.andIndexEqualTo(req.getIndex());
+        List<TrainCarriage> trainCarriages = trainCarriageMapper.selectByExample(trainCarriageExample);
+        if (trainCarriages.size() > 0) {
+            throw new BusinessException(BusinessExceptionEnum.CARRIAGE_INDEX_EXIST);
+        }
+
         DateTime now = DateTime.now();
         TrainCarriage trainCarriage = BeanUtil.copyProperties(req, TrainCarriage.class);
         if (ObjectUtil.isNull(trainCarriage.getId())) {
