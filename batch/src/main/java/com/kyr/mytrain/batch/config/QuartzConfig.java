@@ -1,9 +1,9 @@
 package com.kyr.mytrain.batch.config;
 
- import com.kyr.mytrain.batch.job.TestJob;
- import org.quartz.*;
- import org.springframework.context.annotation.Bean;
- import org.springframework.context.annotation.Configuration;
+import com.kyr.mytrain.batch.job.TestJob;
+import org.quartz.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
  @Configuration
  public class QuartzConfig {
