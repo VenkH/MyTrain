@@ -43,15 +43,15 @@
             <MenuUnfoldOutlined /> &nbsp; 每日车次
           </router-link>
         </a-menu-item>
-<!--        <a-menu-item key="/business/daily-train-station">
+        <a-menu-item key="/business/daily-train-station">
           <router-link to="/business/daily-train-station">
             <MenuUnfoldOutlined /> &nbsp; 每日车站
           </router-link>
         </a-menu-item>
-        <a-menu-item key="/business/daily-train-carriage">
-          <router-link to="/business/daily-train-carriage">
-            <MenuUnfoldOutlined /> &nbsp; 每日车厢
-          </router-link>-->
+        <!--        <a-menu-item key="/business/daily-train-carriage">
+                  <router-link to="/business/daily-train-carriage">
+                    <MenuUnfoldOutlined /> &nbsp; 每日车厢
+                  </router-link>-->
 <!--        </a-menu-item>
         <a-menu-item key="/business/daily-train-seat">
           <router-link to="/business/daily-train-seat">
