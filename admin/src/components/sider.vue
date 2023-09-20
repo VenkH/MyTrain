@@ -2,7 +2,7 @@
   <a-layout-sider width="200" style="background: #fff">
     <a-menu
         v-model:selectedKeys="selectedKeys"
-        :openKeys="['batch', 'base']"
+        :openKeys="['batch', 'base', 'business']"
         mode="inline"
         :style="{ height: '100%', borderRight: 0 }"
     >
@@ -16,6 +16,49 @@
           <user-outlined /> &nbsp; 关于
         </router-link>
       </a-menu-item>
+      <a-sub-menu key="business">
+        <template #title>
+          <span>
+            <UnorderedListOutlined />
+            业务管理
+          </span>
+        </template>
+<!--        <a-menu-item key="/business/sk-token">
+          <router-link to="/business/sk-token">
+            <MenuUnfoldOutlined /> &nbsp; 令牌余量
+          </router-link>
+        </a-menu-item>
+        <a-menu-item key="/business/confirm-order">
+          <router-link to="/business/confirm-order">
+            <MenuUnfoldOutlined /> &nbsp; 订单信息
+          </router-link>
+        </a-menu-item>
+        <a-menu-item key="/business/daily-train-ticket">
+          <router-link to="/business/daily-train-ticket">
+            <MenuUnfoldOutlined /> &nbsp; 余票信息
+          </router-link>
+        </a-menu-item>-->
+        <a-menu-item key="/business/daily-train">
+          <router-link to="/business/daily-train">
+            <MenuUnfoldOutlined /> &nbsp; 每日车次
+          </router-link>
+        </a-menu-item>
+<!--        <a-menu-item key="/business/daily-train-station">
+          <router-link to="/business/daily-train-station">
+            <MenuUnfoldOutlined /> &nbsp; 每日车站
+          </router-link>
+        </a-menu-item>
+        <a-menu-item key="/business/daily-train-carriage">
+          <router-link to="/business/daily-train-carriage">
+            <MenuUnfoldOutlined /> &nbsp; 每日车厢
+          </router-link>-->
+<!--        </a-menu-item>
+        <a-menu-item key="/business/daily-train-seat">
+          <router-link to="/business/daily-train-seat">
+            <MenuUnfoldOutlined /> &nbsp; 每日座位
+          </router-link>
+        </a-menu-item>-->
+      </a-sub-menu>
       <a-sub-menu key="base">
         <template #title>
           <span>
