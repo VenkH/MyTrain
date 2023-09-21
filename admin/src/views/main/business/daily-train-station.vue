@@ -1,7 +1,9 @@
 <template>
   <p>
     <a-space>
-      <a-button type="primary" @click="handleQuery()">刷新</a-button>
+      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
+      <train-select-view v-model="params.code" width="200px"></train-select-view>
+      <a-button type="primary" @click="handleQuery()">查询</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
   </p>
@@ -31,16 +33,16 @@
         <a-date-picker v-model:value="dailyTrainStation.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
       </a-form-item>
       <a-form-item label="车次编号">
-        <a-input v-model:value="dailyTrainStation.trainCode" />
+        <train-select-view v-model="dailyTrainStation.trainCode"></train-select-view>
       </a-form-item>
       <a-form-item label="站序">
         <a-input v-model:value="dailyTrainStation.index" />
       </a-form-item>
       <a-form-item label="站名">
-        <a-input v-model:value="dailyTrainStation.name" />
+        <station-select-view v-model="dailyTrainStation.name"></station-select-view>
       </a-form-item>
       <a-form-item label="站名拼音">
-        <a-input v-model:value="dailyTrainStation.namePinyin" />
+        <a-input v-model:value="dailyTrainStation.namePinyin" disabled />
       </a-form-item>
       <a-form-item label="进站时间">
         <a-time-picker v-model:value="dailyTrainStation.inTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
@@ -59,12 +61,16 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue';
+import {defineComponent, ref, onMounted, watch} from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
+import {pinyin} from "pinyin-pro";
+import TrainSelectView from "@/components/train-select";
+import StationSelectView from "@/components/station-select";
 
 export default defineComponent({
   name: "daily-train-station-view",
+  components: {StationSelectView, TrainSelectView},
   setup() {
     const visible = ref(false);
     let dailyTrainStation = ref({
@@ -87,6 +93,10 @@ export default defineComponent({
       total: 0,
       current: 1,
       pageSize: 10,
+    });
+    let params = ref({
+      code: null,
+      date: null
     });
     let loading = ref(false);
     const columns = [
@@ -140,6 +150,13 @@ export default defineComponent({
       dataIndex: 'operation'
     }
     ];
+    watch(() => dailyTrainStation.value.name, ()=>{
+      if (Tool.isNotEmpty(dailyTrainStation.value.name)) {
+        dailyTrainStation.value.namePinyin = pinyin(dailyTrainStation.value.name, { toneType: 'none'}).replaceAll(" ", "");
+      } else {
+        dailyTrainStation.value.namePinyin = "";
+      }
+    }, {immediate: true});
 
     const onAdd = () => {
       dailyTrainStation.value = {};
@@ -186,7 +203,9 @@ export default defineComponent({
       if (!param) {
         param = {
           page: 1,
-          size: pagination.value.pageSize
+          size: pagination.value.pageSize,
+          code: params.value.code,
+          date: params.value.date
         };
       }
       loading.value = true;
@@ -236,7 +255,8 @@ export default defineComponent({
       onAdd,
       handleOk,
       onEdit,
-      onDelete
+      onDelete,
+      params
     };
   },
 });
