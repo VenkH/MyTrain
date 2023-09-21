@@ -17,6 +17,11 @@ public class StationController {
     @Resource
     private StationService stationService;
 
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello World!!";
+    }
+
     @PostMapping("/save")
     public CommonResp<Object> save(@Valid @RequestBody StationSaveReq req) {
         stationService.save(req);
