@@ -1,7 +1,9 @@
 <template>
   <p>
     <a-space>
-      <a-button type="primary" @click="handleQuery()">刷新</a-button>
+      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
+      <train-select-view v-model="params.trainCode" width="200px"></train-select-view>
+      <a-button type="primary" @click="handleQuery()">查询</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
   </p>
@@ -38,7 +40,7 @@
         <a-date-picker v-model:value="dailyTrainCarriage.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
       </a-form-item>
       <a-form-item label="车次编号">
-        <a-input v-model:value="dailyTrainCarriage.trainCode" />
+        <train-select-view v-model="dailyTrainCarriage.trainCode"></train-select-view>
       </a-form-item>
       <a-form-item label="箱序">
         <a-input v-model:value="dailyTrainCarriage.index" />
@@ -51,25 +53,27 @@
         </a-select>
       </a-form-item>
       <a-form-item label="座位数">
-        <a-input v-model:value="dailyTrainCarriage.seatCount" />
+        <a-input v-model:value="dailyTrainCarriage.seatCount" disabled />
       </a-form-item>
       <a-form-item label="排数">
         <a-input v-model:value="dailyTrainCarriage.rowCount" />
       </a-form-item>
       <a-form-item label="列数">
-        <a-input v-model:value="dailyTrainCarriage.colCount" />
+        <a-input v-model:value="dailyTrainCarriage.colCount" disabled/>
       </a-form-item>
     </a-form>
   </a-modal>
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue';
+import {defineComponent, ref, onMounted, watch} from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
+import TrainSelectView from "@/components/train-select";
 
 export default defineComponent({
   name: "daily-train-carriage-view",
+  components: { TrainSelectView},
   setup() {
     const SEAT_TYPE_ARRAY = window.SEAT_TYPE_ARRAY;
     const visible = ref(false);
@@ -91,6 +95,10 @@ export default defineComponent({
       total: 0,
       current: 1,
       pageSize: 10,
+    });
+    let params = ref({
+      trainCode: null,
+      date: null
     });
     let loading = ref(false);
     const columns = [
@@ -134,6 +142,28 @@ export default defineComponent({
       dataIndex: 'operation'
     }
     ];
+
+    watch(() => dailyTrainCarriage.value.rowCount, ()=>{
+      if (Tool.isNotEmpty(dailyTrainCarriage.value.rowCount) && Tool.isNotEmpty(dailyTrainCarriage.value.seatType)) {
+        let colNum = SEAT_NUM_BY_TYPE_ARRAY[dailyTrainCarriage.value.seatType - 1].num;
+        dailyTrainCarriage.value.colCount = colNum;
+        dailyTrainCarriage.value.seatCount = dailyTrainCarriage.value.rowCount * colNum;
+      } else {
+        dailyTrainCarriage.value.colCount = undefined;
+        dailyTrainCarriage.value.seatCount = undefined;
+      }
+    }, {immediate: true});
+
+    watch(() => dailyTrainCarriage.value.seatType, ()=>{
+      if (Tool.isNotEmpty(dailyTrainCarriage.value.rowCount) && Tool.isNotEmpty(dailyTrainCarriage.value.seatType)) {
+        let colNum = SEAT_NUM_BY_TYPE_ARRAY[dailyTrainCarriage.value.seatType - 1].num;
+        dailyTrainCarriage.value.colCount = colNum;
+        dailyTrainCarriage.value.seatCount = dailyTrainCarriage.value.rowCount * colNum;
+      } else {
+        dailyTrainCarriage.value.colCount = undefined;
+        dailyTrainCarriage.value.seatCount = undefined;
+      }
+    }, {immediate: true});
 
     const onAdd = () => {
       dailyTrainCarriage.value = {};
@@ -187,7 +217,9 @@ export default defineComponent({
       axios.get("/business-service/admin/daily-train-carriage/query-list", {
         params: {
           page: param.page,
-          size: param.size
+          size: param.size,
+          trainCode: params.value.trainCode,
+          date: params.value.date
         }
       }).then((response) => {
         loading.value = false;
@@ -231,7 +263,8 @@ export default defineComponent({
       onAdd,
       handleOk,
       onEdit,
-      onDelete
+      onDelete,
+      params
     };
   },
 });

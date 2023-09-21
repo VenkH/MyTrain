@@ -2,7 +2,7 @@
   <p>
     <a-space>
       <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
-      <train-select-view v-model="params.code" width="200px"></train-select-view>
+      <train-select-view v-model="params.trainCode" width="200px"></train-select-view>
       <a-button type="primary" @click="handleQuery()">查询</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
@@ -95,7 +95,7 @@ export default defineComponent({
       pageSize: 10,
     });
     let params = ref({
-      code: null,
+      trainCode: null,
       date: null
     });
     let loading = ref(false);
@@ -203,16 +203,16 @@ export default defineComponent({
       if (!param) {
         param = {
           page: 1,
-          size: pagination.value.pageSize,
-          code: params.value.code,
-          date: params.value.date
+          size: pagination.value.pageSize
         };
       }
       loading.value = true;
       axios.get("/business-service/admin/daily-train-station/query-list", {
         params: {
           page: param.page,
-          size: param.size
+          size: param.size,
+          trainCode: params.value.trainCode,
+          date: params.value.date
         }
       }).then((response) => {
         loading.value = false;
