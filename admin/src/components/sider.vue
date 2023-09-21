@@ -32,12 +32,12 @@
           <router-link to="/business/confirm-order">
             <MenuUnfoldOutlined /> &nbsp; 订单信息
           </router-link>
-        </a-menu-item>
+        </a-menu-item>-->
         <a-menu-item key="/business/daily-train-ticket">
           <router-link to="/business/daily-train-ticket">
             <MenuUnfoldOutlined /> &nbsp; 余票信息
           </router-link>
-        </a-menu-item>-->
+        </a-menu-item>
         <a-menu-item key="/business/daily-train">
           <router-link to="/business/daily-train">
             <MenuUnfoldOutlined /> &nbsp; 每日车次
@@ -48,16 +48,16 @@
             <MenuUnfoldOutlined /> &nbsp; 每日车站
           </router-link>
         </a-menu-item>
-        <!--        <a-menu-item key="/business/daily-train-carriage">
-                  <router-link to="/business/daily-train-carriage">
-                    <MenuUnfoldOutlined /> &nbsp; 每日车厢
-                  </router-link>-->
-<!--        </a-menu-item>
+        <a-menu-item key="/business/daily-train-carriage">
+          <router-link to="/business/daily-train-carriage">
+            <MenuUnfoldOutlined /> &nbsp; 每日车厢
+          </router-link>
+        </a-menu-item>
         <a-menu-item key="/business/daily-train-seat">
           <router-link to="/business/daily-train-seat">
             <MenuUnfoldOutlined /> &nbsp; 每日座位
           </router-link>
-        </a-menu-item>-->
+        </a-menu-item>
       </a-sub-menu>
       <a-sub-menu key="base">
         <template #title>
