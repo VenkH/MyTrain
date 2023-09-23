@@ -1,7 +1,7 @@
 <template>
   <a-select v-model:value="trainCode" show-search allowClear
             :filterOption="filterTrainCodeOption"
-            @change="onChange" placeholder="请选择车次"
+            @change="onChange" :placeholder="localPlaceholder"
             :style="'width: ' + localWidth">
     <a-select-option v-for="item in trains" :key="item.code" :value="item.code" :label="item.code + item.start + item.end">
       {{item.code}} {{item.start}} ~ {{item.end}}
@@ -17,12 +17,13 @@ import {notification} from "ant-design-vue";
 
 export default defineComponent({
   name: "train-select-view",
-  props: ["modelValue", "width"],
+  props: ["modelValue", "width", "placeholder"],
   emits: ['update:modelValue', 'change'],
   setup(props, {emit}) {
     const trainCode = ref();
     const trains = ref([]);
     const localWidth = ref(props.width);
+    const localPlaceholder = ref("请选择车次");
     if (Tool.isEmpty(props.width)) {
       localWidth.value = "100%";
     }
@@ -70,6 +71,9 @@ export default defineComponent({
 
     onMounted(() => {
       queryAllTrain();
+      if (Tool.isNotEmpty(props.placeholder)) {
+        localPlaceholder.value = props.placeholder;
+      }
     });
 
     return {
@@ -77,7 +81,8 @@ export default defineComponent({
       trains,
       filterTrainCodeOption,
       onChange,
-      localWidth
+      localWidth,
+      localPlaceholder
     };
   },
 });

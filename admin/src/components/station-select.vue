@@ -1,7 +1,7 @@
 <template>
   <a-select v-model:value="name" show-search allowClear
             :filterOption="filterNameOption"
-            @change="onChange" placeholder="请选择车站"
+            @change="onChange" :placeholder="localPlaceholder"
             :style="'width: ' + localWidth">
     <a-select-option v-for="item in stations" :key="item.name" :value="item.name" :label="item.name + item.namePinyin + item.namePy">
       {{item.name}} {{item.namePinyin}} ~ {{item.namePy}}
@@ -17,12 +17,13 @@ import {notification} from "ant-design-vue";
 
 export default defineComponent({
   name: "station-select-view",
-  props: ["modelValue", "width"],
+  props: ["modelValue", "width", "placeholder"],
   emits: ['update:modelValue', 'change'],
   setup(props, {emit}) {
     const name = ref();
     const stations = ref([]);
     const localWidth = ref(props.width);
+    const localPlaceholder = ref("请选择车站");
     if (Tool.isEmpty(props.width)) {
       localWidth.value = "100%";
     }
@@ -70,6 +71,9 @@ export default defineComponent({
 
     onMounted(() => {
       queryAllStation();
+      if (Tool.isNotEmpty(props.placeholder)) {
+        localPlaceholder.value = props.placeholder;
+      }
     });
 
     return {
@@ -77,7 +81,8 @@ export default defineComponent({
       stations,
       filterNameOption,
       onChange,
-      localWidth
+      localWidth,
+      localPlaceholder
     };
   },
 });
