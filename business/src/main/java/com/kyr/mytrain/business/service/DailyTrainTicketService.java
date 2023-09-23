@@ -167,6 +167,7 @@ public class DailyTrainTicketService {
                 dailyTrainTicket.setCreateTime(now);
                 dailyTrainTicket.setUpdateTime(now);
                 dailyTrainTicketMapper.insert(dailyTrainTicket);
+                //LOG.info("生成【{}】【{}】号列车【{}】到【{}】的余票数据",DateUtil.formatDate(date), trainCode, trainStationStart.getName(), trainStationEnd.getName());
             }
         }
 

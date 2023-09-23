@@ -104,7 +104,7 @@ public class DailyTrainSeatService {
 
         for (TrainSeat trainSeat :
                 trainSeats) {
-            LOG.info("生成日期为【{}】，编号为【{}】的火车,第【{}】行，第【{}】列的座位数据", DateUtil.formatDate(date), trainSeat.getTrainCode(), trainSeat.getRow(), trainSeat.getCol());
+            //LOG.info("生成日期为【{}】，编号为【{}】的火车,第【{}】行，第【{}】列的座位数据", DateUtil.formatDate(date), trainSeat.getTrainCode(), trainSeat.getRow(), trainSeat.getCol());
             DailyTrainSeat dailyTrainSeat = BeanUtil.copyProperties(trainSeat, DailyTrainSeat.class);
             dailyTrainSeat.setId(SnowUtil.getSnowIdLong());
             dailyTrainSeat.setDate(date);
