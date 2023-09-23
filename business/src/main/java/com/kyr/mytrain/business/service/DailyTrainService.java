@@ -3,6 +3,7 @@ package com.kyr.mytrain.business.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -33,6 +34,9 @@ public class DailyTrainService {
 
     @Resource
     private TrainService trainService;
+
+    @Resource
+    private DailyTrainStationService dailyTrainStationService;
 
     public void save(DailyTrainSaveReq req) {
         DateTime now = DateTime.now();
@@ -82,7 +86,7 @@ public class DailyTrainService {
     }
 
     /**
-     * 生成某日所有的车次信息
+     * 生成某日所有的车次信息，包括车站，车厢，座位
      * @param date
      */
     public void genDailyTrains(Date date) {
@@ -97,6 +101,7 @@ public class DailyTrainService {
     }
 
     public void genDailyTrain(Date date, Train train) {
+        LOG.info("开始生成日期为【{}】，编号为【{}】的火车相关数据", DateUtil.formatDate(date), train.getCode());
         // 先删除已有的数据
         DailyTrainExample dailyTrainExample = new DailyTrainExample();
         dailyTrainExample.createCriteria()
@@ -112,5 +117,10 @@ public class DailyTrainService {
         dailyTrain.setCreateTime(now);
         dailyTrain.setUpdateTime(now);
         dailyTrainMapper.insert(dailyTrain);
+
+        // 生成车站数据
+        dailyTrainStationService.genDailyTrainStation(date, train.getCode());
+
+        LOG.info("生成日期为【{}】，编号为【{}】的火车相关数据结束", DateUtil.formatDate(date), train.getCode());
     }
 }
