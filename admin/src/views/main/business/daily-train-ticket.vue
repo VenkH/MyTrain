@@ -3,6 +3,8 @@
     <a-space>
       <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
       <train-select-view v-model="params.trainCode" width="200px"></train-select-view>
+      <station-select-view v-model="params.start" width="200px"></station-select-view>
+      <station-select-view v-model="params.end" width="200px"></station-select-view>
       <a-button type="primary" @click="handleQuery()">查询</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
@@ -92,10 +94,11 @@ import { defineComponent, ref, onMounted } from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
 import TrainSelectView from "@/components/train-select";
+import StationSelectView from "@/components/station-select";
 
 export default defineComponent({
   name: "daily-train-ticket-view",
-  components: { TrainSelectView},
+  components: {StationSelectView, TrainSelectView},
   setup() {
     const visible = ref(false);
     let dailyTrainTicket = ref({
@@ -130,7 +133,9 @@ export default defineComponent({
     });
     let params = ref({
       trainCode: null,
-      date: null
+      date: null,
+      start: null,
+      end: null
     });
     let loading = ref(false);
     const columns = [
@@ -284,7 +289,9 @@ export default defineComponent({
           page: param.page,
           size: param.size,
           trainCode: params.value.trainCode,
-          date: params.value.date
+          date: params.value.date,
+          start: params.value.start,
+          end: params.value.end
         }
       }).then((response) => {
         loading.value = false;
