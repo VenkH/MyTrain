@@ -91,6 +91,7 @@ public class DailyTrainStationService {
         List<TrainStation> trainStations = trainStationService.selectByTrainCode(trainCode);
         if (CollUtil.isEmpty(trainStations)) {
             LOG.warn("车次编号为【{}】的火车不存在车站数据！", trainCode);
+            return;
         }
 
         for (TrainStation trainStation :
