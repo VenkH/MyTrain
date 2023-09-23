@@ -276,11 +276,12 @@ export default defineComponent({
       genDailyTrainVisible.value = false;
     }
 
-    const handleTableChange = (pagination) => {
+    const handleTableChange = (page) => {
       // console.log("看看自带的分页参数都有啥：" + pagination);
+      pagination.value.pageSize = page.pageSize;
       handleQuery({
-        page: pagination.current,
-        size: pagination.pageSize
+        page: page.current,
+        size: page.pageSize
       });
     };
 
