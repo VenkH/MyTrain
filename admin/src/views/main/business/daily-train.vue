@@ -5,6 +5,7 @@
       <train-select-view v-model="params.code" width="200px"></train-select-view>
       <a-button type="primary" @click="handleQuery()">查询</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
+      <a-button type="primary" danger @click="onGenDaily">重新生成某日数据</a-button>
     </a-space>
   </p>
   <a-table :dataSource="dailyTrains"
@@ -69,6 +70,17 @@
       </a-form-item>
     </a-form>
   </a-modal>
+  <a-modal v-model:visible="genDailyTrainVisible" title="每日车次" @ok="handleGenDailyOk">
+    <a-form :model="genDailyTrain" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
+      <a-form-item label="日期">
+        <a-date-picker v-model:value="genDailyTrain.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
+      </a-form-item>
+    </a-form>
+    <template #footer>
+      <a-button key="back" @click="handleCancelGenDaily">取消</a-button>
+      <a-button key="submit" type="primary" :loading="genDailyLoading" @click="handleGenDailyOk">确认</a-button>
+    </template>
+  </a-modal>
 </template>
 
 <script>
@@ -83,6 +95,7 @@ export default defineComponent({
   setup() {
     const TRAIN_TYPE_ARRAY = window.TRAIN_TYPE_ARRAY;
     const visible = ref(false);
+    const genDailyTrainVisible = ref(false);
     let dailyTrain = ref({
       id: undefined,
       date: undefined,
@@ -97,6 +110,9 @@ export default defineComponent({
       createTime: undefined,
       updateTime: undefined,
     });
+    let genDailyTrain = ref({
+      date: undefined,
+    });
     const dailyTrains = ref([]);
     // 分页的三个属性名是固定的
     const pagination = ref({
@@ -109,6 +125,7 @@ export default defineComponent({
       date: null
     });
     let loading = ref(false);
+    let genDailyLoading = ref(false);
     const columns = [
     {
       title: '日期',
@@ -166,6 +183,11 @@ export default defineComponent({
       visible.value = true;
     };
 
+    const onGenDaily = () => {
+      genDailyTrainVisible.value = true;
+      genDailyTrain.value = {};
+    }
+
     const onEdit = (record) => {
       dailyTrain.value = window.Tool.copy(record);
       visible.value = true;
@@ -192,6 +214,24 @@ export default defineComponent({
         if (data.success) {
           notification.success({description: "保存成功！"});
           visible.value = false;
+          handleQuery({
+            page: pagination.value.current,
+            size: pagination.value.pageSize
+          });
+        } else {
+          notification.error({description: data.message});
+        }
+      });
+    };
+
+    const handleGenDailyOk = () => {
+      genDailyLoading.value = true;
+      axios.get("/business-service/admin/daily-train/gen-daily/" + genDailyTrain.value.date).then((response) => {
+        genDailyLoading.value = false;
+        let data = response.data;
+        if (data.success) {
+          notification.success({description: "保存成功！"});
+          genDailyTrain.value = false;
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize
@@ -231,6 +271,11 @@ export default defineComponent({
       });
     };
 
+    const handleCancelGenDaily = () => {
+      genDailyTrain.value = {};
+      genDailyTrainVisible.value = false;
+    }
+
     const handleTableChange = (pagination) => {
       // console.log("看看自带的分页参数都有啥：" + pagination);
       handleQuery({
@@ -269,7 +314,13 @@ export default defineComponent({
       onEdit,
       onDelete,
       onChangeCode,
-      params
+      params,
+      genDailyTrainVisible,
+      handleGenDailyOk,
+      genDailyTrain,
+      onGenDaily,
+      genDailyLoading,
+      handleCancelGenDaily
     };
   },
 });
