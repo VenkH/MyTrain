@@ -185,7 +185,7 @@ export default defineComponent({
 
     const onGenDaily = () => {
       genDailyTrainVisible.value = true;
-      genDailyTrain.value = {};
+      genDailyTrain.value.date = undefined;
     }
 
     const onEdit = (record) => {
@@ -231,7 +231,7 @@ export default defineComponent({
         let data = response.data;
         if (data.success) {
           notification.success({description: "保存成功！"});
-          genDailyTrain.value = false;
+          genDailyTrainVisible.value = false;
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize
@@ -272,7 +272,7 @@ export default defineComponent({
     };
 
     const handleCancelGenDaily = () => {
-      genDailyTrain.value = {};
+      genDailyTrain.value.date = undefined;
       genDailyTrainVisible.value = false;
     }
 
