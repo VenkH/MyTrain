@@ -1,23 +1,26 @@
 package com.kyr.mytrain.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.kyr.mytrain.common.resp.PageResp;
-import com.kyr.mytrain.common.util.SnowUtil;
-import com.kyr.mytrain.business.domain.DailyTrain;
-import com.kyr.mytrain.business.domain.DailyTrainExample;
+import com.kyr.mytrain.business.domain.*;
+import com.kyr.mytrain.business.enums.BusinessExceptionEnum;
 import com.kyr.mytrain.business.mapper.DailyTrainMapper;
 import com.kyr.mytrain.business.req.DailyTrainQueryReq;
 import com.kyr.mytrain.business.req.DailyTrainSaveReq;
 import com.kyr.mytrain.business.resp.DailyTrainQueryResp;
+import com.kyr.mytrain.common.exception.BusinessException;
+import com.kyr.mytrain.common.resp.PageResp;
+import com.kyr.mytrain.common.util.SnowUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,6 +30,9 @@ public class DailyTrainService {
 
     @Resource
     private DailyTrainMapper dailyTrainMapper;
+
+    @Resource
+    private TrainService trainService;
 
     public void save(DailyTrainSaveReq req) {
         DateTime now = DateTime.now();
@@ -73,5 +79,38 @@ public class DailyTrainService {
 
     public void delete(Long id) {
         dailyTrainMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 生成某日所有的车次信息
+     * @param date
+     */
+    public void genDailyTrains(Date date) {
+        List<Train> trains = trainService.selectAll();
+        if (CollUtil.isEmpty(trains)) {
+            throw new BusinessException(BusinessExceptionEnum.NONE_TRAIN_DATA);
+        }
+
+        for (Train train : trains) {
+            genDailyTrain(date, train);
+        }
+    }
+
+    public void genDailyTrain(Date date, Train train) {
+        // 先删除已有的数据
+        DailyTrainExample dailyTrainExample = new DailyTrainExample();
+        dailyTrainExample.createCriteria()
+                .andDateEqualTo(date)
+                .andCodeEqualTo(train.getCode());
+        dailyTrainMapper.deleteByExample(dailyTrainExample);
+
+        // 生成新的数据
+        DateTime now = DateTime.now();
+        DailyTrain dailyTrain = BeanUtil.copyProperties(train, DailyTrain.class);
+        dailyTrain.setId(SnowUtil.getSnowIdLong());
+        dailyTrain.setDate(date);
+        dailyTrain.setCreateTime(now);
+        dailyTrain.setUpdateTime(now);
+        dailyTrainMapper.insert(dailyTrain);
     }
 }

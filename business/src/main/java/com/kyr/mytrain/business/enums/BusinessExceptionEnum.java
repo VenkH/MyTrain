@@ -8,7 +8,8 @@ public enum BusinessExceptionEnum implements ExceptionInterface {
     CARRIAGE_INDEX_EXIST("该车次厢号重复！"),
     STATION_NAME_EXIST("车站已存在!"),
     TRAIN_STATION_TRAINCODE_INDEX_UNIQUE("同车次站序重复！"),
-    TRAIN_STATION_TRAINCODE_NAME_UNIQUE("同车次站名重复！");
+    TRAIN_STATION_TRAINCODE_NAME_UNIQUE("同车次站名重复！"),
+    NONE_TRAIN_DATA("没有车次数据！");
 
     private String desc;
 
