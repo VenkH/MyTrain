@@ -9,6 +9,7 @@ import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.kyr.mytrain.business.domain.*;
+import com.kyr.mytrain.business.enums.SeatTypeEnum;
 import com.kyr.mytrain.common.resp.PageResp;
 import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.business.mapper.DailyTrainSeatMapper;
@@ -116,6 +117,22 @@ public class DailyTrainSeatService {
 
         LOG.info("生成日期为【{}】，编号为【{}】的火车座位数据结束", DateUtil.formatDate(date), trainCode);
 
+    }
+
+    public int countSeat(Date date, String trainCode, SeatTypeEnum seatTypeEnum) {
+        String seatType = seatTypeEnum.getCode();
+
+        DailyTrainSeatExample dailyTrainSeatExample = new DailyTrainSeatExample();
+        dailyTrainSeatExample.createCriteria()
+                .andDateEqualTo(date)
+                .andTrainCodeEqualTo(trainCode)
+                .andSeatTypeEqualTo(seatType);
+        long l = dailyTrainSeatMapper.countByExample(dailyTrainSeatExample);
+
+        if (l == 0L) {
+            return -1;
+        }
+        return (int) l;
     }
 
 }

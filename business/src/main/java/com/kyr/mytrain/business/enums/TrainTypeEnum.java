@@ -17,6 +17,16 @@ public enum TrainTypeEnum {
      */
     private BigDecimal priceRate;
 
+    public static BigDecimal getPriceRateByTrainType(String trainType) {
+        for (TrainTypeEnum anEnum :
+                TrainTypeEnum.values()) {
+            if (anEnum.code.equals(trainType)) {
+                return anEnum.priceRate;
+            }
+        }
+        return null;
+    }
+
     TrainTypeEnum(String code, String desc, BigDecimal priceRate) {
         this.code = code;
         this.desc = desc;

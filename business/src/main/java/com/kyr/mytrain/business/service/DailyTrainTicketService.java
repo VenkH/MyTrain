@@ -1,23 +1,33 @@
 package com.kyr.mytrain.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.kyr.mytrain.common.resp.PageResp;
-import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.business.domain.DailyTrainTicket;
 import com.kyr.mytrain.business.domain.DailyTrainTicketExample;
+import com.kyr.mytrain.business.domain.TrainStation;
+import com.kyr.mytrain.business.enums.SeatTypeEnum;
+import com.kyr.mytrain.business.enums.TrainTypeEnum;
 import com.kyr.mytrain.business.mapper.DailyTrainTicketMapper;
 import com.kyr.mytrain.business.req.DailyTrainTicketQueryReq;
 import com.kyr.mytrain.business.req.DailyTrainTicketSaveReq;
 import com.kyr.mytrain.business.resp.DailyTrainTicketQueryResp;
+import com.kyr.mytrain.common.resp.PageResp;
+import com.kyr.mytrain.common.util.SnowUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,6 +37,15 @@ public class DailyTrainTicketService {
 
     @Resource
     private DailyTrainTicketMapper dailyTrainTicketMapper;
+
+    @Resource
+    private TrainStationService trainStationService;
+
+    @Resource
+    private DailyTrainSeatService dailyTrainSeatService;
+
+    @Resource
+    private TrainService trainService;
 
     public void save(DailyTrainTicketSaveReq req) {
         DateTime now = DateTime.now();
@@ -73,5 +92,85 @@ public class DailyTrainTicketService {
 
     public void delete(Long id) {
         dailyTrainTicketMapper.deleteByPrimaryKey(id);
+    }
+
+    @Transactional
+    public void genDailyTrainTicket(Date date, String trainCode) {
+        LOG.info("开始生成日期为【{}】，编号为【{}】的火车余票数据", DateUtil.formatDate(date), trainCode);
+
+        List<TrainStation> trainStations = trainStationService.selectByTrainCode(trainCode);
+        if (CollUtil.isEmpty(trainStations)) {
+            LOG.warn("车次编号为【{}】的火车不存在车站数据！结束生成火车余票数据！", trainCode);
+            return;
+        }
+
+        DailyTrainTicketExample dailyTrainTicketExample = new DailyTrainTicketExample();
+        dailyTrainTicketExample.createCriteria()
+                .andDateEqualTo(date)
+                .andTrainCodeEqualTo(trainCode);
+        dailyTrainTicketMapper.deleteByExample(dailyTrainTicketExample);
+
+        int ydz = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.YDZ);
+        int edz = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.EDZ);
+        int rw = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.RW);
+        int yw = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.YW);
+
+        String trainType = trainService.selectTrainTypeByTrainCode(trainCode);
+        BigDecimal priceRate = TrainTypeEnum.getPriceRateByTrainType(trainType);
+        if (null == priceRate) {
+            LOG.error("根据【{}】号列车的列车类型【{}】获取票价比例时错误！", trainCode, trainType);
+            throw new NullPointerException();
+        }
+
+        for (int i = 0; i < trainStations.size(); i++) {
+            // 始发站
+            TrainStation trainStationStart = trainStations.get(i);
+
+            BigDecimal sumKM = new BigDecimal(BigInteger.ZERO);
+            for (int j = i+1; j < trainStations.size(); j++) {
+
+                // 终点站
+                TrainStation trainStationEnd = trainStations.get(j);
+
+                sumKM = sumKM.add(trainStationEnd.getKm());
+
+                DailyTrainTicket dailyTrainTicket = new DailyTrainTicket();
+                dailyTrainTicket.setId(SnowUtil.getSnowIdLong());
+                dailyTrainTicket.setDate(date);
+                dailyTrainTicket.setTrainCode(trainCode);
+
+                dailyTrainTicket.setStart(trainStationStart.getName());
+                dailyTrainTicket.setStartPinyin(trainStationStart.getNamePinyin());
+                dailyTrainTicket.setStartTime(trainStationStart.getOutTime());
+                dailyTrainTicket.setStartIndex(trainStationStart.getIndex());
+
+                dailyTrainTicket.setEnd(trainStationEnd.getName());
+                dailyTrainTicket.setEndPinyin(trainStationEnd.getNamePinyin());
+                dailyTrainTicket.setEndTime(trainStationEnd.getInTime());
+                dailyTrainTicket.setEndIndex(trainStationEnd.getIndex());
+
+                BigDecimal ydzPrice = sumKM.multiply(SeatTypeEnum.YDZ.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal edzPrice = sumKM.multiply(SeatTypeEnum.EDZ.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal rwPrice = sumKM.multiply(SeatTypeEnum.RW.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal ywPrice = sumKM.multiply(SeatTypeEnum.YW.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
+
+                dailyTrainTicket.setYdz(ydz);
+                dailyTrainTicket.setYdzPrice(ydzPrice);
+                dailyTrainTicket.setEdz(edz);
+                dailyTrainTicket.setEdzPrice(edzPrice);
+                dailyTrainTicket.setRw(rw);
+                dailyTrainTicket.setRwPrice(rwPrice);
+                dailyTrainTicket.setYw(yw);
+                dailyTrainTicket.setYwPrice(ywPrice);
+
+                Date now = new Date();
+                dailyTrainTicket.setCreateTime(now);
+                dailyTrainTicket.setUpdateTime(now);
+                dailyTrainTicketMapper.insert(dailyTrainTicket);
+            }
+        }
+
+        LOG.info("生成日期为【{}】，编号为【{}】的火车余票数据结束", DateUtil.formatDate(date), trainCode);
+
     }
 }

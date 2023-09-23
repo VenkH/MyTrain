@@ -1,10 +1,13 @@
 package com.kyr.mytrain.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.kyr.mytrain.business.enums.BusinessExceptionEnum;
+import com.kyr.mytrain.common.exception.BusinessException;
 import com.kyr.mytrain.common.resp.PageResp;
 import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.business.domain.Train;
@@ -77,5 +80,16 @@ public class TrainService {
         TrainExample trainExample = new TrainExample();
         trainExample.setOrderByClause("code desc");
         return trainMapper.selectByExample(trainExample);
+    }
+
+    public String selectTrainTypeByTrainCode(String trainCode) {
+        TrainExample trainExample = new TrainExample();
+        trainExample.createCriteria().andCodeEqualTo(trainCode);
+        List<Train> trains = trainMapper.selectByExample(trainExample);
+        if (CollUtil.isEmpty(trains)) {
+            LOG.error("找不到火车号【{}】对应的车次数据", trains);
+            throw new BusinessException(BusinessExceptionEnum.NONE_TRAIN_DATA);
+        }
+        return trains.get(0).getType();
     }
 }
