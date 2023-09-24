@@ -33,7 +33,7 @@
       <template v-else-if="column.dataIndex === 'type'">
         <span v-for="item in PASSENGER_TYPE_ARRAY" :key="item.code">
           <span v-if="item.code === record.type">
-            {{item.value}}
+            {{item.desc}}
           </span>
         </span>
       </template>
