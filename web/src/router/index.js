@@ -19,6 +19,10 @@ const routes = [
     {
       path: 'ticket',
       component: () => import( '../views/main/ticket.vue'),
+    },
+    {
+      path: 'order',
+      component: () => import( '../views/main/order.vue'),
     }]
   },
   {
