@@ -1,8 +1,8 @@
 package com.kyr.mytrain.business.controller;
 
-import com.kyr.mytrain.business.req.StationQueryReq;
-import com.kyr.mytrain.business.resp.StationQueryResp;
-import com.kyr.mytrain.business.service.StationService;
+import com.kyr.mytrain.business.req.TrainQueryReq;
+import com.kyr.mytrain.business.resp.TrainQueryResp;
+import com.kyr.mytrain.business.service.TrainService;
 import com.kyr.mytrain.common.resp.CommonResp;
 import com.kyr.mytrain.common.resp.PageResp;
 import jakarta.annotation.Resource;
@@ -14,21 +14,21 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/station")
-public class StationController {
+@RequestMapping("/train")
+public class TrainController {
 
     @Resource
-    private StationService stationService;
+    private TrainService trainService;
 
     @GetMapping("/query-list")
-    public CommonResp<PageResp<StationQueryResp>> queryList(@Valid StationQueryReq req) {
-        PageResp<StationQueryResp> list = stationService.queryList(req);
+    public CommonResp<PageResp<TrainQueryResp>> queryList(@Valid TrainQueryReq req) {
+        PageResp<TrainQueryResp> list = trainService.queryList(req);
         return new CommonResp<>(list);
     }
 
     @GetMapping("/query-all")
-    public CommonResp<List<StationQueryResp>> queryAll() {
-        List<StationQueryResp> resp = stationService.queryAll();
+    public CommonResp<List<TrainQueryResp>> queryAll() {
+        List<TrainQueryResp> resp = trainService.queryAll();
         return new CommonResp<>(resp);
     }
 
