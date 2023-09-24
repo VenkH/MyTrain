@@ -2,9 +2,8 @@
   <p>
     <a-space>
       <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
-      <train-select-view v-model="params.trainCode" width="200px"></train-select-view>
       <station-select-view v-model="params.start" width="200px" placeholder="请选择出发站"></station-select-view>
-      <station-select-view v-model="params.end" width="200px" placeholder="请选择到达站"></station-select-view>
+      <station-select-view v-model="params.end" width="200px" placeholder="请选择终点站"></station-select-view>
       <a-button type="primary" @click="handleQuery()">查询</a-button>
 
     </a-space>
@@ -78,13 +77,12 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
-import TrainSelectView from "@/components/train-select";
 import StationSelectView from "@/components/station-select";
 import dayjs from "dayjs";
 
 export default defineComponent({
   name: "ticket-view",
-  components: {StationSelectView, TrainSelectView},
+  components: {StationSelectView},
   setup() {
     const visible = ref(false);
     let dailyTrainTicket = ref({
@@ -126,11 +124,6 @@ export default defineComponent({
     let loading = ref(false);
     const columns = [
       {
-        title: '日期',
-        dataIndex: 'date',
-        key: 'date',
-      },
-      {
         title: '车次编号',
         dataIndex: 'trainCode',
         key: 'trainCode',
@@ -169,9 +162,19 @@ export default defineComponent({
       },
     ];
 
-
-
     const handleQuery = (param) => {
+      if (Tool.isEmpty(params.value.date)) {
+        notification.error({description: "请选择日期！"});
+        return;
+      }
+      if (Tool.isEmpty(params.value.start)) {
+        notification.error({description: "请选择出发站！"});
+        return;
+      }
+      if (Tool.isEmpty(params.value.end)) {
+        notification.error({description: "请选择终点站！"});
+        return;
+      }
       if (!param) {
         param = {
           page: 1,
