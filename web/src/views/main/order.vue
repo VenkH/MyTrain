@@ -15,17 +15,28 @@
       </span>
     </div>
   </div>
+  <a-divider></a-divider>
+  <b>勾选要购票的乘客：</b>&nbsp;
+  <a-checkbox-group v-model:value="passengersCheck" :options="passengersOptions" />
+  <br/>
+  选中的乘客:{{passengersCheck}}
 </template>
 
 <script>
 
-import {defineComponent} from "vue";
+import {defineComponent, ref, onMounted} from "vue";
+import axios from "axios";
+import {notification} from "ant-design-vue";
 
 export default defineComponent({
   name: "order-view",
   setup() {
     const dailyTrainTicket = SessionStorage.get(SESSION_ORDER) || {};
     console.log("下单的车次信息", dailyTrainTicket);
+
+    const passengers = ref([]);
+    const passengersOptions = ref([]);
+    const passengersCheck = ref([]);
 
     const SEAT_TYPE = window.SEAT_TYPE;
     console.log(SEAT_TYPE)
@@ -53,10 +64,32 @@ export default defineComponent({
     }
     console.log("本车次提供的座位：", seatTypes);
 
+    const handleQueryPassenger = () => {
+      axios.get("/member-service/passenger/query-mine").then((response) => {
+        let data = response.data;
+        if (data.success) {
+          passengers.value = data.content;
+          passengers.value.forEach((passenger) => passengersOptions.value.push({
+            label: passenger.name,
+            value: passenger.id
+          }));
+        } else {
+          notification.error({description: data.message});
+        }
+      })
+    }
+
+    onMounted(() => {
+      handleQueryPassenger();
+    });
 
     return {
       dailyTrainTicket,
-      seatTypes
+      seatTypes,
+      passengers,
+      handleQueryPassenger,
+      passengersOptions,
+      passengersCheck
     };
   },
 });
