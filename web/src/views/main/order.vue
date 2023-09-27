@@ -52,7 +52,7 @@
   <a-modal v-model:visible="visible" title="请核对以下信息"
            style="top: 50px; width: 800px"
            ok-text="确认" cancel-text="取消"
-           @ok="showFirstImageCodeModal">
+           @ok="handleOk">
     <div class="order-tickets">
       <a-row class="order-tickets-header" v-if="tickets.length > 0">
         <a-col :span="3">乘客</a-col>
@@ -131,6 +131,7 @@ export default defineComponent({
     });
 
     watch(() => SEAT_COL_ARRAY.value, () => {
+      // 先清空再赋值，防止数据出错
       chooseSeatObj.value = {};
       for (let i = 1; i <= 2; i++) {
         SEAT_COL_ARRAY.value.forEach((item) => {
@@ -286,6 +287,40 @@ export default defineComponent({
 
     };
 
+    /**
+     * 判断所选的座位是否符合条件
+     */
+    const handleOk = () => {
+      // 先把每张票中的座位清空
+      for (let i = 0; i < tickets.value.length; i++) {
+        tickets.value[i].seat = null;
+      }
+
+      let i = -1;
+      // 将被选中的座位赋值给tickets的seat
+      for (let key in chooseSeatObj.value) {
+        if (chooseSeatObj.value[key]) {
+          i++;
+          //  判断选中的座位是否大于购票的数量
+          // 选中的座位数必须与购票的数量一致，如果座位数大于购票数，则直接返回，否则这里会越界
+          if (i >= tickets.value.length) {
+            notification.error({description: '所选的座位数大于购票数'});
+            return;
+          }
+          tickets.value[i].seat = key;
+        }
+      }
+        if (i > -1 && i < (tickets.value.length - 1)) {
+          notification.error({description: '所选的座位数小于购票数'});
+          return;
+        }
+
+        console.log("最终购票：", tickets.value);
+      notification.info({description: '购票成功'});
+      visible.value = false;
+
+    }
+
     onMounted(() => {
       handleQueryPassenger();
     });
@@ -303,7 +338,8 @@ export default defineComponent({
       finishCheckPassenger,
       chooseSeatType,
       chooseSeatObj,
-      SEAT_COL_ARRAY
+      SEAT_COL_ARRAY,
+      handleOk
     };
   },
 });
