@@ -315,10 +315,24 @@ export default defineComponent({
           return;
         }
 
-        console.log("最终购票：", tickets.value);
-      notification.info({description: '购票成功'});
-      visible.value = false;
+      console.log("最终购票：", tickets.value);
+      axios.post("/business-service/confirm-order/do", {
+        dailyTrainTicketId: dailyTrainTicket.id,
+        date: dailyTrainTicket.date,
+        trainCode: dailyTrainTicket.trainCode,
+        start: dailyTrainTicket.start,
+        end: dailyTrainTicket.end,
+        tickets: tickets.value
+      }).then((response) => {
+        let data = response.data;
+        if (data.success) {
+          notification.success({description: '下单成功'});
+        } else {
+          notification.error({description: data.message});
+        }
+      });
 
+      visible.value = false;
     }
 
     onMounted(() => {

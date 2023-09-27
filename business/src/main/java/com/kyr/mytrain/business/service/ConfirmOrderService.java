@@ -11,7 +11,7 @@ import com.kyr.mytrain.business.domain.ConfirmOrder;
 import com.kyr.mytrain.business.domain.ConfirmOrderExample;
 import com.kyr.mytrain.business.mapper.ConfirmOrderMapper;
 import com.kyr.mytrain.business.req.ConfirmOrderQueryReq;
-import com.kyr.mytrain.business.req.ConfirmOrderSaveReq;
+import com.kyr.mytrain.business.req.ConfirmOrderDoReq;
 import com.kyr.mytrain.business.resp.ConfirmOrderQueryResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ public class ConfirmOrderService {
     @Resource
     private ConfirmOrderMapper confirmOrderMapper;
 
-    public void save(ConfirmOrderSaveReq req) {
+    public void save(ConfirmOrderDoReq req) {
         DateTime now = DateTime.now();
         ConfirmOrder confirmOrder = BeanUtil.copyProperties(req, ConfirmOrder.class);
         if (ObjectUtil.isNull(confirmOrder.getId())) {
@@ -66,5 +66,11 @@ public class ConfirmOrderService {
 
     public void delete(Long id) {
         confirmOrderMapper.deleteByPrimaryKey(id);
+    }
+
+
+    public void doConfirm(ConfirmOrderDoReq req) {
+       // 参数校验
+
     }
 }
