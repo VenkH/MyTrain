@@ -27,12 +27,12 @@
           <router-link to="/business/sk-token">
             <MenuUnfoldOutlined /> &nbsp; 令牌余量
           </router-link>
-        </a-menu-item>
+        </a-menu-item>-->
         <a-menu-item key="/business/confirm-order">
           <router-link to="/business/confirm-order">
             <MenuUnfoldOutlined /> &nbsp; 订单信息
           </router-link>
-        </a-menu-item>-->
+        </a-menu-item>
         <a-menu-item key="/business/daily-train-ticket">
           <router-link to="/business/daily-train-ticket">
             <MenuUnfoldOutlined /> &nbsp; 余票信息

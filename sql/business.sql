@@ -169,3 +169,47 @@ create table `daily_train_ticket` (
                                       primary key (`id`),
                                       unique key `date_train_code_start_end_unique` (`date`, `train_code`, `start`, `end`)
 ) engine=innodb default charset=utf8mb4 comment='余票信息';
+
+
+drop table if exists `confirm_order`;
+create table `confirm_order` (
+                                 `id` bigint not null comment 'id',
+                                 `member_id` bigint not null comment '会员id',
+                                 `date` date not null comment '日期',
+                                 `train_code` varchar(20) not null comment '车次编号',
+                                 `start` varchar(20) not null comment '出发站',
+                                 `end` varchar(20) not null comment '到达站',
+                                 `daily_train_ticket_id` bigint not null comment '余票ID',
+                                 `tickets` json not null comment '车票',
+                                 `status` char(1) not null comment '订单状态|枚举[ConfirmOrderStatusEnum]',
+                                 `create_time` datetime(3) comment '新增时间',
+                                 `update_time` datetime(3) comment '修改时间',
+                                 primary key (`id`),
+                                 index `date_train_code_index` (`date`, `train_code`)
+) engine=innodb default charset=utf8mb4 comment='确认订单';
+
+CREATE TABLE `undo_log` (
+                            `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                            `branch_id` bigint(20) NOT NULL,
+                            `xid` varchar(100) NOT NULL,
+                            `context` varchar(128) NOT NULL,
+                            `rollback_info` longblob NOT NULL,
+                            `log_status` int(11) NOT NULL,
+                            `log_created` datetime NOT NULL,
+                            `log_modified` datetime NOT NULL,
+                            `ext` varchar(100) DEFAULT NULL,
+                            PRIMARY KEY (`id`),
+                            UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+drop table if exists `sk_token`;
+create table `sk_token` (
+                            `id` bigint not null comment 'id',
+                            `date` date not null comment '日期',
+                            `train_code` varchar(20) not null comment '车次编号',
+                            `count` int not null comment '令牌余量',
+                            `create_time` datetime(3) comment '新增时间',
+                            `update_time` datetime(3) comment '修改时间',
+                            primary key (`id`),
+                            unique key `date_train_code_unique` (`date`, `train_code`)
+) engine=innodb default charset=utf8mb4 comment='秒杀令牌';
