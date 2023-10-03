@@ -18,6 +18,17 @@ public class ConfirmOrderTicketReq {
 
     private String seat;
 
+    @NotNull(message = "【座位类型】不能为空")
+    private String seatTypeCode;
+
+    public String getSeatTypeCode() {
+        return seatTypeCode;
+    }
+
+    public void setSeatTypeCode(String seatTypeCode) {
+        this.seatTypeCode = seatTypeCode;
+    }
+
     @Override
     public String toString() {
         return "ConfirmOrderTicketReq{" +
@@ -26,6 +37,7 @@ public class ConfirmOrderTicketReq {
                 ", passengerName='" + passengerName + '\'' +
                 ", passengerIdCard='" + passengerIdCard + '\'' +
                 ", seat='" + seat + '\'' +
+                ", seatTypeCode='" + seatTypeCode + '\'' +
                 '}';
     }
 

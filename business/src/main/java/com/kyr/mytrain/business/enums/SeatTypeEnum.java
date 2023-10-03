@@ -41,6 +41,15 @@ public enum SeatTypeEnum {
         this.price = price;
     }
 
+    public static SeatTypeEnum getEnumByCode(String code) {
+        for (SeatTypeEnum value : SeatTypeEnum.values()) {
+            if (value.code.equals(code)) {
+                return value;
+            }
+        }
+        return null;
+    }
+
     SeatTypeEnum(String code, String desc, BigDecimal price) {
         this.code = code;
         this.desc = desc;

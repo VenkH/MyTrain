@@ -9,12 +9,16 @@ import com.github.pagehelper.PageInfo;
 import com.kyr.mytrain.business.domain.ConfirmOrder;
 import com.kyr.mytrain.business.domain.ConfirmOrderExample;
 import com.kyr.mytrain.business.domain.DailyTrainTicket;
+import com.kyr.mytrain.business.enums.BusinessExceptionEnum;
 import com.kyr.mytrain.business.enums.ConfirmOrderStatusEnum;
+import com.kyr.mytrain.business.enums.SeatTypeEnum;
 import com.kyr.mytrain.business.mapper.ConfirmOrderMapper;
 import com.kyr.mytrain.business.req.ConfirmOrderDoReq;
 import com.kyr.mytrain.business.req.ConfirmOrderQueryReq;
+import com.kyr.mytrain.business.req.ConfirmOrderTicketReq;
 import com.kyr.mytrain.business.resp.ConfirmOrderQueryResp;
 import com.kyr.mytrain.common.context.LoginContext;
+import com.kyr.mytrain.common.exception.BusinessException;
 import com.kyr.mytrain.common.resp.PageResp;
 import com.kyr.mytrain.common.util.SnowUtil;
 import jakarta.annotation.Resource;
@@ -97,12 +101,48 @@ public class ConfirmOrderService {
 
         // 查出真实的余票记录
         DailyTrainTicket dailyTrainTicket = dailyTrainTicketService.selectByUnique(req.getTrainCode(), req.getDate(), req.getStart(), req.getEnd());
-        LOG.info("查出余票记录:{}", dailyTrainTicket);
+        LOG.info("【余票记录-扣减前】一等座：{}，二等座：{}，软卧：{}，硬卧：{}", dailyTrainTicket.getYdz(), dailyTrainTicket.getEdz(), dailyTrainTicket.getRw(), dailyTrainTicket.getYw());
+
         // 扣减余票，确认余票是否足够
+        for (ConfirmOrderTicketReq ticketReq : req.getTickets()) {
+            SeatTypeEnum enumByCode = SeatTypeEnum.getEnumByCode(ticketReq.getSeatTypeCode());
+            switch (enumByCode) {
+                case YDZ -> {
+                    int countLeft = dailyTrainTicket.getYdz() - 1;
+                    if (countLeft < 0) {
+                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
+                    }
+                    dailyTrainTicket.setYdz(countLeft);
+                }
+                case EDZ -> {
+                    int countLeft = dailyTrainTicket.getEdz() - 1;
+                    if (countLeft < 0) {
+                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
+                    }
+                    dailyTrainTicket.setEdz(countLeft);
+                }
+                case RW -> {
+                    int countLeft = dailyTrainTicket.getRw() - 1;
+                    if (countLeft < 0) {
+                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
+                    }
+                    dailyTrainTicket.setRw(countLeft);
+                }
+                case YW -> {
+                    int countLeft = dailyTrainTicket.getYw() - 1;
+                    if (countLeft < 0) {
+                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
+                    }
+                    dailyTrainTicket.setYw(countLeft);
+                }
+                default -> throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_SEAT_TYPE_ERROR);
+
+            }
+        }
+        LOG.info("【余票记录-扣减后】一等座：{}，二等座：{}，软卧：{}，硬卧：{}", dailyTrainTicket.getYdz(), dailyTrainTicket.getEdz(), dailyTrainTicket.getRw(), dailyTrainTicket.getYw());
 
         // 选座
             // 一个车厢一个车厢获取数据
-
             // 挑选符合条件的座位
 
         // 选座后的事务处理
