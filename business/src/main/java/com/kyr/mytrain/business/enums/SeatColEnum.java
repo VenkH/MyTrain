@@ -29,11 +29,7 @@ public enum SeatColEnum {
 
     @Override
     public String toString() {
-        return "SeatColEnum{" +
-                "code='" + code + '\'' +
-                ", desc='" + desc + '\'' +
-                ", type='" + type + '\'' +
-                '}';
+        return code;
     }
 
     public String getCode() {
