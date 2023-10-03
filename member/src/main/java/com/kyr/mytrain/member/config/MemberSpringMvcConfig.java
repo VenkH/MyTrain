@@ -1,7 +1,7 @@
 package com.kyr.mytrain.member.config;
 
 import com.kyr.mytrain.common.interceptor.LogInterceptor;
-import com.kyr.mytrain.common.interceptor.MemberInterceptor;
+import com.kyr.mytrain.common.interceptor.MemberLoginInterceptor;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -13,7 +13,7 @@ public class MemberSpringMvcConfig implements WebMvcConfigurer {
     LogInterceptor logInterceptor;
 
     @Resource
-    MemberInterceptor memberInterceptor;
+    MemberLoginInterceptor memberInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

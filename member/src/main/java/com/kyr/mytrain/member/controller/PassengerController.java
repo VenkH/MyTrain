@@ -1,6 +1,6 @@
 package com.kyr.mytrain.member.controller;
 
-import com.kyr.mytrain.common.context.MemberContext;
+import com.kyr.mytrain.common.context.LoginContext;
 import com.kyr.mytrain.common.resp.CommonResp;
 import com.kyr.mytrain.common.resp.PageResp;
 import com.kyr.mytrain.member.dto.PassengerQueryDto;
@@ -28,7 +28,7 @@ public class PassengerController {
 
     @GetMapping("/query-list")
     public CommonResp<PageResp<PassengerQueryResp>> queryList(@Valid PassengerQueryDto passengerQueryDto) {
-        passengerQueryDto.setMemberId(MemberContext.getId());
+        passengerQueryDto.setMemberId(LoginContext.getId());
         PageResp<PassengerQueryResp> list = passengerService.queryPassenger(passengerQueryDto);
         return new CommonResp(list);
     }

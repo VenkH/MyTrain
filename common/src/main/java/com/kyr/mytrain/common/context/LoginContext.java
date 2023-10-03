@@ -4,7 +4,7 @@ import com.kyr.mytrain.common.resp.MemberLoginResp;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MemberContext {
+public class LoginContext {
 
     private static ThreadLocal<MemberLoginResp> member = new ThreadLocal<>();
 
@@ -13,7 +13,7 @@ public class MemberContext {
     }
 
     public static void setMember(MemberLoginResp member) {
-        MemberContext.member.set(member);
+        LoginContext.member.set(member);
     }
 
     public static Long getId() {

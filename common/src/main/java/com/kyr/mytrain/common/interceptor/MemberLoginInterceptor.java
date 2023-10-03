@@ -3,7 +3,7 @@ package com.kyr.mytrain.common.interceptor;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.kyr.mytrain.common.context.MemberContext;
+import com.kyr.mytrain.common.context.LoginContext;
 import com.kyr.mytrain.common.resp.MemberLoginResp;
 import com.kyr.mytrain.common.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +17,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
  */
 @Component
 @Slf4j
-public class MemberInterceptor implements HandlerInterceptor {
+public class MemberLoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -28,7 +28,7 @@ public class MemberInterceptor implements HandlerInterceptor {
             JSONObject loginMember = JwtUtil.getJSONObject(token);
             log.info("当前登录会员：{}", loginMember);
             MemberLoginResp member = JSONUtil.toBean(loginMember, MemberLoginResp.class);
-            MemberContext.setMember(member);
+            LoginContext.setMember(member);
         }
         return true;
     }

@@ -5,7 +5,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.kyr.mytrain.common.context.MemberContext;
+import com.kyr.mytrain.common.context.LoginContext;
 import com.kyr.mytrain.common.resp.PageResp;
 import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.member.domain.Passenger;
@@ -30,7 +30,7 @@ public class PassengerService {
         Passenger passenger = BeanUtil.copyProperties(passengerDto, Passenger.class);
         if (ObjectUtil.isNull(passenger.getId())) {
             passenger.setId(SnowUtil.getSnowIdLong());
-            passenger.setMemberId(MemberContext.getId());
+            passenger.setMemberId(LoginContext.getId());
             passenger.setCreateTime(now);
             passenger.setUpdateTime(now);
             passengerMapper.insert(passenger);
@@ -67,7 +67,7 @@ public class PassengerService {
     }
 
     public List<PassengerQueryResp>  queryMine() {
-        Long memberId = MemberContext.getId();
+        Long memberId = LoginContext.getId();
 
         PassengerExample passengerExample = new PassengerExample();
         passengerExample.setOrderByClause("name asc");
