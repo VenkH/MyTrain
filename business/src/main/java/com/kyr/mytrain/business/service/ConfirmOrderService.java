@@ -49,6 +49,9 @@ public class ConfirmOrderService {
     @Resource
     private DailyTrainSeatService dailyTrainSeatService;
 
+    @Resource
+    private AfterConfirmOrderService afterConfirmOrderService;
+
     public void save(ConfirmOrderDoReq req) {
         DateTime now = DateTime.now();
         ConfirmOrder confirmOrder = BeanUtil.copyProperties(req, ConfirmOrder.class);
@@ -132,7 +135,8 @@ public class ConfirmOrderService {
                 );
             }
 
-        } else {
+        }
+        else {
             LOG.info("本次购票需要选座");
             List<SeatColEnum> colsByType = SeatColEnum.getColsByType(ticket0.getSeatTypeCode());
             LOG.info("座位类型：{}，可选择的座位：{}", SeatTypeEnum.getEnumByCode(ticket0.getSeatTypeCode()).getDesc(), colsByType);
@@ -171,16 +175,12 @@ public class ConfirmOrderService {
             );
         }
 
-        // 选座
-        // 一个车厢一个车厢获取数据
-
-        // 挑选符合条件的座位
-
         // 选座后的事务处理
         // 选座表修改售卖情况Sell
         // 余票详情表修改余票
         // 为会员增加购票记录
         // 更新订单状态为成功
+        afterConfirmOrderService.afterDoConfirm(finalSeatList, dailyTrainTicket);
 
     }
 
