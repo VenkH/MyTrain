@@ -54,6 +54,12 @@ const routes = [{
       path: 'confirm-order',
       component: () => import('../views/main/business/confirm-order.vue'),
     }]
+  },{
+    path: 'member/',
+    children: [{
+      path: 'ticket',
+      component: () => import('../views/main/member/ticket.vue')
+    }]
   }]
 }, {
   path: '',
