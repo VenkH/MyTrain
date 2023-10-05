@@ -73,6 +73,23 @@ public class DailyTrainCarriageService {
         }
     }
 
+    /**
+     * 查找某天某趟车某个座位类型的所有车厢
+     * @param date
+     * @param trainCode
+     * @param seatType
+     * @return
+     */
+    public List<DailyTrainCarriage> selectBySeatType(Date date, String trainCode, String seatType) {
+        DailyTrainCarriageExample dailyTrainCarriageExample = new DailyTrainCarriageExample();
+        dailyTrainCarriageExample.setOrderByClause("`index` asc");
+        dailyTrainCarriageExample.createCriteria()
+                .andDateEqualTo(date)
+                .andTrainCodeEqualTo(trainCode)
+                .andSeatTypeEqualTo(seatType);
+        return dailyTrainCarriageMapper.selectByExample(dailyTrainCarriageExample);
+    }
+
     public PageResp<DailyTrainCarriageQueryResp> queryList(DailyTrainCarriageQueryReq req) {
         DailyTrainCarriageExample dailyTrainCarriageExample = new DailyTrainCarriageExample();
         dailyTrainCarriageExample.setOrderByClause("date desc, train_code asc");
