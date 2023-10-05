@@ -2,16 +2,15 @@ package com.kyr.mytrain.member.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
-import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.kyr.mytrain.common.req.MemberTicketSaveReq;
 import com.kyr.mytrain.common.resp.PageResp;
 import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.member.domain.Ticket;
 import com.kyr.mytrain.member.domain.TicketExample;
 import com.kyr.mytrain.member.mapper.TicketMapper;
 import com.kyr.mytrain.member.req.TicketQueryReq;
-import com.kyr.mytrain.member.req.TicketSaveReq;
 import com.kyr.mytrain.member.resp.TicketQueryResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
@@ -28,18 +27,13 @@ public class TicketService {
     @Resource
     private TicketMapper ticketMapper;
 
-    public void save(TicketSaveReq req) {
+    public void save(MemberTicketSaveReq req) {
         DateTime now = DateTime.now();
         Ticket ticket = BeanUtil.copyProperties(req, Ticket.class);
-        if (ObjectUtil.isNull(ticket.getId())) {
-            ticket.setId(SnowUtil.getSnowIdLong());
-            ticket.setCreateTime(now);
-            ticket.setUpdateTime(now);
-            ticketMapper.insert(ticket);
-        } else {
-            ticket.setUpdateTime(now);
-            ticketMapper.updateByPrimaryKey(ticket);
-        }
+        ticket.setId(SnowUtil.getSnowIdLong());
+        ticket.setCreateTime(now);
+        ticket.setUpdateTime(now);
+        ticketMapper.insert(ticket);
     }
 
     public PageResp<TicketQueryResp> queryList(TicketQueryReq req) {

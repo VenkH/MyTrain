@@ -2,8 +2,13 @@ package com.kyr.mytrain.business.service;
 
 import com.kyr.mytrain.business.domain.DailyTrainSeat;
 import com.kyr.mytrain.business.domain.DailyTrainTicket;
+import com.kyr.mytrain.business.feign.MemberFeign;
 import com.kyr.mytrain.business.mapper.AfterConfirmOrderMapper;
 import com.kyr.mytrain.business.mapper.DailyTrainSeatMapper;
+import com.kyr.mytrain.business.req.ConfirmOrderTicketReq;
+import com.kyr.mytrain.common.context.LoginContext;
+import com.kyr.mytrain.common.req.MemberTicketSaveReq;
+import com.kyr.mytrain.common.util.SnowUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -27,6 +32,9 @@ public class AfterConfirmOrderService {
     @Resource
     private AfterConfirmOrderMapper afterConfirmOrderMapper;
 
+    @Resource
+    private MemberFeign memberFeign;
+
     /**
      * 确认订单后保存数据到数据库
      * * 选座表修改售卖情况Sell
@@ -35,13 +43,13 @@ public class AfterConfirmOrderService {
      * * 更新订单状态为成功
      */
     @Transactional
-    public void afterDoConfirm(List<DailyTrainSeat> finalSeatList, DailyTrainTicket dailyTrainTicket) {
+    public void afterDoConfirm(List<DailyTrainSeat> finalSeatList, DailyTrainTicket dailyTrainTicket, List<ConfirmOrderTicketReq> tickets) {
 
         Date date = dailyTrainTicket.getDate();
         String trainCode = dailyTrainTicket.getTrainCode();
 
-
-        for (DailyTrainSeat dailyTrainSeat : finalSeatList) {
+        for (int index = 0; index < finalSeatList.size(); index++) {
+            DailyTrainSeat dailyTrainSeat = finalSeatList.get(index);
 
             DailyTrainSeat trainSeat = new DailyTrainSeat();
             trainSeat.setId(dailyTrainSeat.getId());
@@ -87,6 +95,27 @@ public class AfterConfirmOrderService {
                     minEndIndex,
                     maxEndIndex
             );
+
+            MemberTicketSaveReq memberTicketSaveReq = new MemberTicketSaveReq();
+            memberTicketSaveReq.setId(SnowUtil.getSnowIdLong());
+            memberTicketSaveReq.setMemberId(LoginContext.getId());
+            memberTicketSaveReq.setPassengerId(tickets.get(index).getPassengerId());
+            memberTicketSaveReq.setPassengerName(tickets.get(index).getPassengerName());
+            memberTicketSaveReq.setTrainDate(date);
+            memberTicketSaveReq.setTrainCode(trainCode);
+            memberTicketSaveReq.setCarriageIndex(dailyTrainSeat.getCarriageIndex());
+            memberTicketSaveReq.setSeatRow(dailyTrainSeat.getRow());
+            memberTicketSaveReq.setSeatCol(dailyTrainSeat.getCol());
+            memberTicketSaveReq.setStartStation(dailyTrainTicket.getStart());
+            memberTicketSaveReq.setStartTime(dailyTrainTicket.getStartTime());
+            memberTicketSaveReq.setEndStation(dailyTrainTicket.getEnd());
+            memberTicketSaveReq.setEndTime(dailyTrainTicket.getEndTime());
+            memberTicketSaveReq.setSeatType(dailyTrainSeat.getSeatType());
+            Date now = new Date();
+            memberTicketSaveReq.setCreateTime(now);
+            memberTicketSaveReq.setUpdateTime(now);
+            memberFeign.save(memberTicketSaveReq);
+
 
         }
 

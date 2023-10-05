@@ -106,6 +106,7 @@ public class ConfirmOrderService {
         Date date = req.getDate();
         String start = req.getStart();
         String end = req.getEnd();
+        List<ConfirmOrderTicketReq> tickets = req.getTickets();
 
         // 查出真实的余票记录
         DailyTrainTicket dailyTrainTicket = dailyTrainTicketService.selectByUnique(trainCode, date, start, end);
@@ -119,12 +120,12 @@ public class ConfirmOrderService {
         List<DailyTrainSeat> finalSeatList = new ArrayList<>();
 
         // 计算偏移量
-        ConfirmOrderTicketReq ticket0 = req.getTickets().get(0);
+        ConfirmOrderTicketReq ticket0 = tickets.get(0);
         if (StrUtil.isBlank(ticket0.getSeat())) {
 
             LOG.info("本次购票不选座");
             // 选座
-            for (ConfirmOrderTicketReq ticket : req.getTickets()) {
+            for (ConfirmOrderTicketReq ticket : tickets) {
                 getSeatWithoutSelections(
                         finalSeatList,
                         date,
@@ -142,7 +143,7 @@ public class ConfirmOrderService {
             LOG.info("座位类型：{}，可选择的座位：{}", SeatTypeEnum.getEnumByCode(ticket0.getSeatTypeCode()).getDesc(), colsByType);
 
             ArrayList<Integer> absoluteOffsetList = new ArrayList<>(5);
-            for (ConfirmOrderTicketReq ticket : req.getTickets()) {
+            for (ConfirmOrderTicketReq ticket : tickets) {
                 for (int i = 0; i < colsByType.size(); i++) {
                     if (ticket.getSeat().contains(colsByType.get(i).getCode())) {
                         if (ticket.getSeat().contains("1")) {
@@ -180,7 +181,7 @@ public class ConfirmOrderService {
         // 余票详情表修改余票
         // 为会员增加购票记录
         // 更新订单状态为成功
-        afterConfirmOrderService.afterDoConfirm(finalSeatList, dailyTrainTicket);
+        afterConfirmOrderService.afterDoConfirm(finalSeatList, dailyTrainTicket, tickets);
 
     }
 
