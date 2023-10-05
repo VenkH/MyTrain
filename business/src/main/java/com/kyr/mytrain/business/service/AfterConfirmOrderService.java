@@ -1,9 +1,12 @@
 package com.kyr.mytrain.business.service;
 
+import com.kyr.mytrain.business.domain.ConfirmOrder;
 import com.kyr.mytrain.business.domain.DailyTrainSeat;
 import com.kyr.mytrain.business.domain.DailyTrainTicket;
+import com.kyr.mytrain.business.enums.ConfirmOrderStatusEnum;
 import com.kyr.mytrain.business.feign.MemberFeign;
 import com.kyr.mytrain.business.mapper.AfterConfirmOrderMapper;
+import com.kyr.mytrain.business.mapper.ConfirmOrderMapper;
 import com.kyr.mytrain.business.mapper.DailyTrainSeatMapper;
 import com.kyr.mytrain.business.req.ConfirmOrderTicketReq;
 import com.kyr.mytrain.common.context.LoginContext;
@@ -33,6 +36,9 @@ public class AfterConfirmOrderService {
     private AfterConfirmOrderMapper afterConfirmOrderMapper;
 
     @Resource
+    private ConfirmOrderMapper confirmOrderMapper;
+
+    @Resource
     private MemberFeign memberFeign;
 
     /**
@@ -43,7 +49,11 @@ public class AfterConfirmOrderService {
      * * 更新订单状态为成功
      */
     @Transactional
-    public void afterDoConfirm(List<DailyTrainSeat> finalSeatList, DailyTrainTicket dailyTrainTicket, List<ConfirmOrderTicketReq> tickets) {
+    public void afterDoConfirm(
+            List<DailyTrainSeat> finalSeatList,
+            DailyTrainTicket dailyTrainTicket,
+            List<ConfirmOrderTicketReq> tickets,
+            ConfirmOrder confirmOrder) {
 
         Date date = dailyTrainTicket.getDate();
         String trainCode = dailyTrainTicket.getTrainCode();
@@ -51,12 +61,14 @@ public class AfterConfirmOrderService {
         for (int index = 0; index < finalSeatList.size(); index++) {
             DailyTrainSeat dailyTrainSeat = finalSeatList.get(index);
 
+            // 选座表修改售卖情况Sell
             DailyTrainSeat trainSeat = new DailyTrainSeat();
             trainSeat.setId(dailyTrainSeat.getId());
             trainSeat.setSell(dailyTrainSeat.getSell());
             trainSeat.setUpdateTime(new Date());
             dailyTrainSeatMapper.updateByPrimaryKeySelective(trainSeat);
 
+            // 余票详情表修改余票
             // 原来：  010000001
             // 被购买：000111000
             // 最终：  010111001
@@ -96,6 +108,7 @@ public class AfterConfirmOrderService {
                     maxEndIndex
             );
 
+            // 为会员增加购票记录
             MemberTicketSaveReq memberTicketSaveReq = new MemberTicketSaveReq();
             memberTicketSaveReq.setId(SnowUtil.getSnowIdLong());
             memberTicketSaveReq.setMemberId(LoginContext.getId());
@@ -116,8 +129,13 @@ public class AfterConfirmOrderService {
             memberTicketSaveReq.setUpdateTime(now);
             memberFeign.save(memberTicketSaveReq);
 
-
         }
+
+        ConfirmOrder confirmOrderForUpdate = new ConfirmOrder();
+        confirmOrderForUpdate.setId(confirmOrder.getId());
+        confirmOrderForUpdate.setUpdateTime(new Date());
+        confirmOrderForUpdate.setStatus(ConfirmOrderStatusEnum.SUCCESS.getCode());
+        confirmOrderMapper.updateByPrimaryKeySelective(confirmOrderForUpdate);
 
     }
 }

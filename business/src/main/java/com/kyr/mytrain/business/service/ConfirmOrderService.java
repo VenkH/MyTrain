@@ -52,7 +52,7 @@ public class ConfirmOrderService {
     @Resource
     private AfterConfirmOrderService afterConfirmOrderService;
 
-    public void save(ConfirmOrderDoReq req) {
+    public ConfirmOrder save(ConfirmOrderDoReq req) {
         DateTime now = DateTime.now();
         ConfirmOrder confirmOrder = BeanUtil.copyProperties(req, ConfirmOrder.class);
         if (ObjectUtil.isNull(confirmOrder.getId())) {
@@ -67,6 +67,7 @@ public class ConfirmOrderService {
             confirmOrder.setUpdateTime(now);
             confirmOrderMapper.updateByPrimaryKey(confirmOrder);
         }
+        return confirmOrder;
     }
 
     public PageResp<ConfirmOrderQueryResp> queryList(ConfirmOrderQueryReq req) {
@@ -100,7 +101,7 @@ public class ConfirmOrderService {
         // 参数校验
 
         // 保存确认订单表，状态初始
-        save(req);
+        ConfirmOrder confirmOrder = save(req);
 
         String trainCode = req.getTrainCode();
         Date date = req.getDate();
@@ -181,7 +182,7 @@ public class ConfirmOrderService {
         // 余票详情表修改余票
         // 为会员增加购票记录
         // 更新订单状态为成功
-        afterConfirmOrderService.afterDoConfirm(finalSeatList, dailyTrainTicket, tickets);
+        afterConfirmOrderService.afterDoConfirm(finalSeatList, dailyTrainTicket, tickets, confirmOrder);
 
     }
 
