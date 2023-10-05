@@ -18,7 +18,12 @@
       </a-menu-item>
       <a-menu-item key="/ticket">
         <router-link to="/ticket">
-          <user-outlined/>&nbsp;车票
+          <user-outlined/>&nbsp;车票查询
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="/my-ticket">
+        <router-link to="/my-ticket">
+          <user-outlined/>&nbsp;我的车票
         </router-link>
       </a-menu-item>
     </a-menu>

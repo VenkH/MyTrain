@@ -25,7 +25,7 @@
       <a-col :span="4">票种</a-col>
       <a-col :span="4">座位类型</a-col>
     </a-row>
-    <a-row class="order-tickets-row" v-for="ticket in tickets" :key="ticket.passengerId">
+    <a-row class="order-tickets-row" v-for="ticket in tickets" :key="ticket.memberId">
       <a-col :span="2">{{ticket.passengerName}}</a-col>
       <a-col :span="6">{{ticket.passengerIdCard}}</a-col>
       <a-col :span="4">
@@ -60,7 +60,7 @@
         <a-col :span="3">票种</a-col>
         <a-col :span="3">座位类型</a-col>
       </a-row>
-      <a-row class="order-tickets-row" v-for="ticket in tickets" :key="ticket.passengerId">
+      <a-row class="order-tickets-row" v-for="ticket in tickets" :key="ticket.memberId">
         <a-col :span="3">{{ticket.passengerName}}</a-col>
         <a-col :span="15">{{ticket.passengerIdCard}}</a-col>
         <a-col :span="3">
@@ -174,7 +174,7 @@ export default defineComponent({
 
     // 购票列表，用于界面展示，并传递到后端接口，用来描述：哪个乘客购买什么座位的票
     // {
-    //   passengerId: 123,
+    //   memberId: 123,
     //   passengerType: "1",
     //   passengerName: "张三",
     //   passengerIdCard: "12323132132",
@@ -188,7 +188,7 @@ export default defineComponent({
       // 每次有变化时，把购票列表清空，重新构造列表
       tickets.value = [];
       passengersCheck.value.forEach((item) => tickets.value.push({
-        passengerId: item.id,
+        memberId: item.id,
         passengerType: item.type,
         seatTypeCode: seatTypes[0].code,
         passengerName: item.name,
