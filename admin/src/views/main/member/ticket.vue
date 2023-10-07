@@ -45,7 +45,6 @@ export default defineComponent({
     let ticket = ref({
       id: undefined,
       memberId: undefined,
-      memberId: undefined,
       passengerName: undefined,
       trainDate: undefined,
       trainCode: undefined,
