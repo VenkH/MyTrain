@@ -174,7 +174,7 @@ export default defineComponent({
 
     // 购票列表，用于界面展示，并传递到后端接口，用来描述：哪个乘客购买什么座位的票
     // {
-    //   memberId: 123,
+    //   passengerId: 123,
     //   passengerType: "1",
     //   passengerName: "张三",
     //   passengerIdCard: "12323132132",
@@ -188,7 +188,7 @@ export default defineComponent({
       // 每次有变化时，把购票列表清空，重新构造列表
       tickets.value = [];
       passengersCheck.value.forEach((item) => tickets.value.push({
-        memberId: item.id,
+        passengerId: item.id,
         passengerType: item.type,
         seatTypeCode: seatTypes[0].code,
         passengerName: item.name,
