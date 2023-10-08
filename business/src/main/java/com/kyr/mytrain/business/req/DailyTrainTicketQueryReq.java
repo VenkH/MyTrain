@@ -4,6 +4,7 @@ import com.kyr.mytrain.common.dto.PageDto;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class DailyTrainTicketQueryReq extends PageDto {
 
@@ -18,6 +19,20 @@ public class DailyTrainTicketQueryReq extends PageDto {
 
     public String getStart() {
         return start;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DailyTrainTicketQueryReq)) return false;
+        if (!super.equals(o)) return false;
+        DailyTrainTicketQueryReq that = (DailyTrainTicketQueryReq) o;
+        return Objects.equals(getTrainCode(), that.getTrainCode()) && Objects.equals(getDate(), that.getDate()) && Objects.equals(getStart(), that.getStart()) && Objects.equals(getEnd(), that.getEnd()) && Objects.equals(getPage(), that.getPage()) && Objects.equals(getSize(), that.getSize());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getTrainCode(), getDate(), getStart(), getEnd(), getPage(), getSize());
     }
 
     public void setStart(String start) {
@@ -52,6 +67,10 @@ public class DailyTrainTicketQueryReq extends PageDto {
     @Override
     public String toString() {
         return "DailyTrainTicketQueryReq{" +
+                "trainCode='" + trainCode + '\'' +
+                ", date=" + date +
+                ", start='" + start + '\'' +
+                ", end='" + end + '\'' +
                 "} " + super.toString();
     }
 }
