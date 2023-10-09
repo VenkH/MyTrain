@@ -132,9 +132,13 @@ export default defineComponent({
     }
     ];
 
+    /**
+     * 监控车厢座位类型和行数的变化，自动计算出车厢的座位数量
+     * @type {number[]}
+     */
     watch(() => trainCarriage.value.rowCount, ()=>{
       if (Tool.isNotEmpty(trainCarriage.value.rowCount) && Tool.isNotEmpty(trainCarriage.value.seatType)) {
-        let colNum = SEAT_NUM_BY_TYPE_ARRAY[trainCarriage.value.seatType - 1].num;
+        let colNum = COL_NUM_BY_TYPE_ARRAY[trainCarriage.value.seatType - 1].num;
         trainCarriage.value.colCount = colNum;
         trainCarriage.value.seatCount = trainCarriage.value.rowCount * colNum;
       } else {
@@ -145,7 +149,7 @@ export default defineComponent({
 
     watch(() => trainCarriage.value.seatType, ()=>{
       if (Tool.isNotEmpty(trainCarriage.value.rowCount) && Tool.isNotEmpty(trainCarriage.value.seatType)) {
-        let colNum = SEAT_NUM_BY_TYPE_ARRAY[trainCarriage.value.seatType - 1].num;
+        let colNum = COL_NUM_BY_TYPE_ARRAY[trainCarriage.value.seatType - 1].num;
         trainCarriage.value.colCount = colNum;
         trainCarriage.value.seatCount = trainCarriage.value.rowCount * colNum;
       } else {

@@ -6,7 +6,8 @@ import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 import * as Icons from '@ant-design/icons-vue'
 import axios from 'axios';
-import './assets/js/enums'
+import './assets/js/gen-enums'
+import './assets/js/oth-enums'
 
 const app = createApp(App);
 app.use(Antd).use(store).use(router).mount('#app')
