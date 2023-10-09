@@ -62,6 +62,15 @@ public class DailyTrainTicketService {
         }
     }
 
+    /**
+     * 存在缓存击穿的问题：当热点的key过期时，大量的请求同时访问数据库
+     * 1. 上分布式锁
+     * 2. 使用定时任务定时更新缓存数据
+     *
+     * 同样也存在缓存雪崩：当大量热点的key同时过期，会有更多的请求去访问数据库
+     * @param req
+     * @return
+     */
     @Cacheable(value = "queryList")
     public PageResp<DailyTrainTicketQueryResp> queryList(DailyTrainTicketQueryReq req) {
         DailyTrainTicketExample dailyTrainTicketExample = new DailyTrainTicketExample();
