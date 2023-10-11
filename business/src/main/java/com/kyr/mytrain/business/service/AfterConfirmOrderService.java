@@ -12,12 +12,12 @@ import com.kyr.mytrain.business.req.ConfirmOrderTicketReq;
 import com.kyr.mytrain.common.context.LoginContext;
 import com.kyr.mytrain.common.req.MemberTicketSaveReq;
 import com.kyr.mytrain.common.util.SnowUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -48,7 +48,8 @@ public class AfterConfirmOrderService {
      * * 为会员增加购票记录
      * * 更新订单状态为成功
      */
-    @Transactional
+    //@Transactional
+    @GlobalTransactional
     public void afterDoConfirm(
             List<DailyTrainSeat> finalSeatList,
             DailyTrainTicket dailyTrainTicket,

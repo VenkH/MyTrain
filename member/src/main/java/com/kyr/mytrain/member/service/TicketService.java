@@ -28,13 +28,17 @@ public class TicketService {
     @Resource
     private TicketMapper ticketMapper;
 
-    public void save(MemberTicketSaveReq req) {
+    public void save(MemberTicketSaveReq req) throws Exception {
+//        LOG.info("seata全局事务id:{}", RootContext.getXID());
         DateTime now = DateTime.now();
         Ticket ticket = BeanUtil.copyProperties(req, Ticket.class);
         ticket.setId(SnowUtil.getSnowIdLong());
         ticket.setCreateTime(now);
         ticket.setUpdateTime(now);
         ticketMapper.insert(ticket);
+//        if (1==1) {
+//            throw new Exception("模拟异常");
+//        }
     }
 
     public PageResp<TicketQueryResp> queryList(TicketQueryReq req) {

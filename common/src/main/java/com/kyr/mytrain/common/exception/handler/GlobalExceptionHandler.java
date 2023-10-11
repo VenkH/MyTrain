@@ -1,7 +1,9 @@
 package com.kyr.mytrain.common.exception.handler;
 
+import cn.hutool.core.util.StrUtil;
 import com.kyr.mytrain.common.exception.BusinessException;
 import com.kyr.mytrain.common.resp.CommonResp;
+import io.seata.core.context.RootContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
@@ -23,7 +25,13 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public CommonResp exceptionHandler(Exception e) {
+    public CommonResp exceptionHandler(Exception e) throws Exception{
+        if (StrUtil.isNotBlank(RootContext.getXID())) {
+            // 如果是全局事务出现了异常，就不要包装返回值，把异常抛出，让调用方接收
+            log.info("出现全局事务异常！Seata全局事务ID:{}", RootContext.getXID());
+            throw e;
+        }
+
         log.error("系统出错，异常信息为：" + e);
         CommonResp commonResp = CommonResp.generateErrorResp("系统错误，请联系管理员！");
         return commonResp;

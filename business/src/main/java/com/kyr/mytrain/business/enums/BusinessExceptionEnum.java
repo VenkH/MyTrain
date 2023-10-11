@@ -13,6 +13,8 @@ public enum BusinessExceptionEnum implements ExceptionInterface {
 
     CONFIRM_ORDER_TICKET_COUNT_ERROR("余票不足！"),
     CONFIRM_ORDER_SEAT_TYPE_ERROR("座位类型不存在！"),
+    CONFIRM_ORDER_ERROR("服务器繁忙，请稍后重试！"),
+
     ;
 
     private String desc;
