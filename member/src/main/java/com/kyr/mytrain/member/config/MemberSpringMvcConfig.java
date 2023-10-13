@@ -22,8 +22,8 @@ public class MemberSpringMvcConfig implements WebMvcConfigurer {
        registry.addInterceptor(memberInterceptor)
                .addPathPatterns("/**")
                .excludePathPatterns(
-                       "/member-service/member/sendCode",
-                       "/member-service/member/login"
+                       "/member/sendCode",
+                       "/member/login"
                );
     }
 }
