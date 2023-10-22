@@ -15,7 +15,7 @@ public enum BusinessExceptionEnum implements ExceptionInterface {
     CONFIRM_ORDER_SEAT_TYPE_ERROR("座位类型不存在！"),
     CONFIRM_ORDER_ERROR("服务器繁忙，请稍后重试！"),
     CONFIRM_ORDER_LOCK_FAIL("购票人数过多，请稍后重试！"),
-
+    CONFIRM_ORDER_FLOW_EXCEPTION("购票人数过多，请稍后重试！"),
     ;
 
     private String desc;
