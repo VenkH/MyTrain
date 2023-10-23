@@ -118,4 +118,13 @@ public class DailyTrainStationService {
         dailyTrainStation.setUpdateTime(now);
         dailyTrainStationMapper.insert(dailyTrainStation);
     }
+
+    public int countStation(Date date, String trainCode) {
+        DailyTrainStationExample dailyTrainStationExample = new DailyTrainStationExample();
+        dailyTrainStationExample.createCriteria()
+                .andDateEqualTo(date)
+                .andTrainCodeEqualTo(trainCode);
+        long count = dailyTrainStationMapper.countByExample(dailyTrainStationExample);
+        return (int) count;
+    }
 }

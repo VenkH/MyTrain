@@ -5,19 +5,20 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.kyr.mytrain.common.resp.PageResp;
-import com.kyr.mytrain.common.util.SnowUtil;
 import com.kyr.mytrain.business.domain.SkToken;
 import com.kyr.mytrain.business.domain.SkTokenExample;
 import com.kyr.mytrain.business.mapper.SkTokenMapper;
 import com.kyr.mytrain.business.req.SkTokenQueryReq;
 import com.kyr.mytrain.business.req.SkTokenSaveReq;
 import com.kyr.mytrain.business.resp.SkTokenQueryResp;
+import com.kyr.mytrain.common.resp.PageResp;
+import com.kyr.mytrain.common.util.SnowUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,6 +28,12 @@ public class SkTokenService {
 
     @Resource
     private SkTokenMapper skTokenMapper;
+
+    @Resource
+    private DailyTrainSeatService dailyTrainSeatService;
+
+    @Resource
+    private DailyTrainStationService dailyTrainStationService;
 
     public void save(SkTokenSaveReq req) {
         DateTime now = DateTime.now();
@@ -67,4 +74,34 @@ public class SkTokenService {
     public void delete(Long id) {
         skTokenMapper.deleteByPrimaryKey(id);
     }
+
+    public void genDailySkToken(Date date, String trainCode) {
+        SkTokenExample skTokenExample = new SkTokenExample();
+        skTokenExample.createCriteria()
+                .andDateEqualTo(date)
+                .andTrainCodeEqualTo(trainCode);
+        skTokenMapper.deleteByExample(skTokenExample);
+
+        SkToken skToken = new SkToken();
+        skToken.setId(SnowUtil.getSnowIdLong());
+        skToken.setDate(date);
+        skToken.setTrainCode(trainCode);
+        //skToken.setCount();
+        Date now = new Date();
+        skToken.setCreateTime(now);
+        skToken.setUpdateTime(now);
+
+        int countSeat = dailyTrainSeatService.countSeat(date, trainCode);
+        LOG.info("编号为：{}的列车有座位{}个", trainCode, countSeat);
+
+        int countStation = dailyTrainStationService.countStation(date, trainCode);
+        LOG.info("编号为：{}的列车有车站{}个", trainCode, countStation);
+
+        int countToken = (int) ((int) countSeat * countStation * 0.75);
+        LOG.info(" 编号为:{}的列车有令牌：{}个", trainCode, countToken);
+        skToken.setCount(countToken);
+
+        skTokenMapper.insert(skToken);
+    }
+
 }

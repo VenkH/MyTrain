@@ -129,14 +129,21 @@ public class DailyTrainSeatService {
 
     }
 
+    public int countSeat(Date date, String trainCode) {
+        return countSeat(date, trainCode, null);
+    }
+
     public int countSeat(Date date, String trainCode, SeatTypeEnum seatTypeEnum) {
-        String seatType = seatTypeEnum.getCode();
 
         DailyTrainSeatExample dailyTrainSeatExample = new DailyTrainSeatExample();
-        dailyTrainSeatExample.createCriteria()
-                .andDateEqualTo(date)
-                .andTrainCodeEqualTo(trainCode)
-                .andSeatTypeEqualTo(seatType);
+        DailyTrainSeatExample.Criteria criteria = dailyTrainSeatExample.createCriteria();
+        criteria.andDateEqualTo(date)
+                .andTrainCodeEqualTo(trainCode);
+
+        if (ObjectUtil.isNotNull(seatTypeEnum)) {
+            String seatType = seatTypeEnum.getCode();
+            criteria.andSeatTypeEqualTo(seatType);
+        }
         long l = dailyTrainSeatMapper.countByExample(dailyTrainSeatExample);
 
         if (l == 0L) {
