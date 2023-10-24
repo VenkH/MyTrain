@@ -67,7 +67,7 @@ public class ConfirmOrderService {
             confirmOrder.setCreateTime(now);
             confirmOrder.setUpdateTime(now);
             confirmOrder.setMemberId(LoginContext.getId());
-            confirmOrder.setStatus(ConfirmOrderStatusEnum.INIT.getCode());
+            confirmOrder.setStatus(ConfirmOrderStatusEnum.PENDING.getCode());
             confirmOrder.setTickets(JSON.toJSONString(req.getTickets()));
             confirmOrderMapper.insert(confirmOrder);
         } else {

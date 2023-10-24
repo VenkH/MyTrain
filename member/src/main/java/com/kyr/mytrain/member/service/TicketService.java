@@ -12,12 +12,14 @@ import com.kyr.mytrain.member.domain.Ticket;
 import com.kyr.mytrain.member.domain.TicketExample;
 import com.kyr.mytrain.member.mapper.TicketMapper;
 import com.kyr.mytrain.member.req.TicketQueryReq;
+import com.kyr.mytrain.member.req.remote.ConfirmOrderDoReq;
 import com.kyr.mytrain.member.resp.TicketQueryResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -69,5 +71,17 @@ public class TicketService {
 
     public void delete(Long id) {
         ticketMapper.deleteByPrimaryKey(id);
+    }
+
+    public List<Ticket> queryBoughtTicket(ConfirmOrderDoReq req) {
+        TicketExample ticketExample = new TicketExample();
+        TicketExample.Criteria criteria = ticketExample.createCriteria();
+        criteria.andTrainDateEqualTo(req.getDate())
+                .andTrainCodeEqualTo(req.getTrainCode());
+        ArrayList<Long> passengerIdList = new ArrayList<>();
+        req.getTickets().forEach((ticket)-> passengerIdList.add(ticket.getPassengerId()));
+        criteria.andPassengerIdIn(passengerIdList);
+
+        return ticketMapper.selectByExample(ticketExample);
     }
 }
