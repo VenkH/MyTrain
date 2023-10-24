@@ -127,11 +127,6 @@ public class ConfirmOrderService {
 
             // 查出真实的余票记录
             DailyTrainTicket dailyTrainTicket = dailyTrainTicketService.selectByUnique(trainCode, date, start, end);
-            LOG.info("【余票记录-扣减前】一等座：{}，二等座：{}，软卧：{}，硬卧：{}", dailyTrainTicket.getYdz(), dailyTrainTicket.getEdz(), dailyTrainTicket.getRw(), dailyTrainTicket.getYw());
-
-            // 扣减余票，确认余票是否足够
-            reduceTicket(req, dailyTrainTicket);
-            LOG.info("【余票记录-扣减后】一等座：{}，二等座：{}，软卧：{}，硬卧：{}", dailyTrainTicket.getYdz(), dailyTrainTicket.getEdz(), dailyTrainTicket.getRw(), dailyTrainTicket.getYw());
 
             // 最终选座结果
             List<DailyTrainSeat> finalSeatList = new ArrayList<>();
@@ -360,41 +355,5 @@ public class ConfirmOrderService {
         }
     }
 
-    private void reduceTicket(ConfirmOrderDoReq req, DailyTrainTicket dailyTrainTicket) {
-        for (ConfirmOrderTicketReq ticketReq : req.getTickets()) {
-            SeatTypeEnum enumByCode = SeatTypeEnum.getEnumByCode(ticketReq.getSeatTypeCode());
-            switch (enumByCode) {
-                case YDZ -> {
-                    int countLeft = dailyTrainTicket.getYdz() - 1;
-                    if (countLeft < 0) {
-                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
-                    }
-                    dailyTrainTicket.setYdz(countLeft);
-                }
-                case EDZ -> {
-                    int countLeft = dailyTrainTicket.getEdz() - 1;
-                    if (countLeft < 0) {
-                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
-                    }
-                    dailyTrainTicket.setEdz(countLeft);
-                }
-                case RW -> {
-                    int countLeft = dailyTrainTicket.getRw() - 1;
-                    if (countLeft < 0) {
-                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
-                    }
-                    dailyTrainTicket.setRw(countLeft);
-                }
-                case YW -> {
-                    int countLeft = dailyTrainTicket.getYw() - 1;
-                    if (countLeft < 0) {
-                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
-                    }
-                    dailyTrainTicket.setYw(countLeft);
-                }
-                default -> throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_SEAT_TYPE_ERROR);
 
-            }
-        }
-    }
 }
