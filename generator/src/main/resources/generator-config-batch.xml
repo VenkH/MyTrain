@@ -24,7 +24,7 @@
 
         <!-- 配置数据源，需要根据自己的项目修改 -->
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://XXXX/train_batch?serverTimezone=Asia/Shanghai"
+                        connectionURL="jdbc:mysql://????/train_batch?serverTimezone=Asia/Shanghai"
                         userId="train_batch"
                         password="@train2023">
         </jdbcConnection>
